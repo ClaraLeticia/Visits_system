@@ -1,14 +1,34 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Register</title>
-</head>
-<body>
-    <h2>Register</h2>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Register</button>
-    </form>
-</body>
-</html>
+
+<h2>Registro de Usuário</h2>
+<form method="post" id="registrationForm">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit">Registrar</button>
+</form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        function toggleFields() {
+            let atendente = document.getElementById("id_atendente").checked;
+            let funcionario = document.getElementById("id_funcionario").checked;
+            let branchField = document.getElementById("id_branch").parentElement;
+            let departmentField = document.getElementById("id_department").parentElement;
+
+            if (atendente || funcionario) {
+                branchField.style.display = "block";
+                departmentField.style.display = "block";
+            } else {
+                branchField.style.display = "none";
+                departmentField.style.display = "none";
+                document.getElementById("id_branch").value = "";
+                document.getElementById("id_department").value = "";
+            }
+        }
+
+        document.getElementById("id_atendente").addEventListener("change", toggleFields);
+        document.getElementById("id_funcionario").addEventListener("change", toggleFields);
+        toggleFields();
+    });
+</script>
+

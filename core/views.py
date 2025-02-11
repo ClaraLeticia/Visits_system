@@ -3,13 +3,12 @@ from django.contrib.auth import authenticate, login
 from core.forms import CustomUserCreationForm
 from django.contrib import messages
 
+# Função para renderizar a tela de registro
 def registerPage(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            administrador = form.cleaned_data.get('administrador')
-            #print(administrador)
             return redirect('/login')
         else:
             print('Formulário inválido')
@@ -27,7 +26,6 @@ def loginPage(request):
     if request.method == 'POST':
         username = request.POST.get('username') # Pega o valor do campo username do formulário
         password = request.POST.get('password') # Pega o valor do campo password do formulário
-
         # O método autheticate verifica se o usuário e senha são válidos
         user = authenticate(request, username=username, password=password) 
         # Se o usuário for válido, o método login é chamado e o usuário é logado no sistema
