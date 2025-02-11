@@ -2,6 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from core.forms import CustomUserCreationForm
 from django.contrib import messages
+from .models import Department
+from django.http import JsonResponse
+
 
 # Função para renderizar a tela de registro
 def registerPage(request):
@@ -20,6 +23,10 @@ def registerPage(request):
         context = {'form': form}
         return render(request, 'registration/register.html', context)
     
+def get_departments(request):
+    branch_id = request.GET.get('branch_id')
+    departments = Department.objects.filter(branch_id=branch_id).values('id', 'name')
+    return JsonResponse({'departments': list(departments)})
 
 # Função para renderizar a tela de login
 def loginPage(request):

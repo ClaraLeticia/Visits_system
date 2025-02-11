@@ -14,6 +14,7 @@ class CustomUserCreationForm(UserCreationForm):
         model = CustomUser
         fields = ['username', 'email', 'password1', 'password2', 'administrador', 'atendente', 'funcionario', 'branch', 'department']
 
+
     def clean(self):
         cleaned_data = super().clean()
         atendente = cleaned_data.get("atendente")

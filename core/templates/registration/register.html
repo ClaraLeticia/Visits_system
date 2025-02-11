@@ -1,4 +1,3 @@
-
 <h2>Registro de Usuário</h2>
 <form method="post" id="registrationForm">
     {% csrf_token %}
@@ -21,14 +20,28 @@
             } else {
                 branchField.style.display = "none";
                 departmentField.style.display = "none";
-                document.getElementById("id_branch").value = "";
-                document.getElementById("id_department").value = "";
             }
+        }
+
+        function loadDepartments() {
+            let branchId = document.getElementById("id_branch").value;
+            let departmentSelect = document.getElementById("id_department");
+
+            fetch(`/get-departments/?branch_id=${branchId}`)
+                .then(response => response.json())
+                .then(data => {
+                    departmentSelect.innerHTML = '<option value="">Selecione um setor</option>';
+                    data.departments.forEach(department => {
+                        let option = new Option(department.name, department.id);
+                        departmentSelect.add(option);
+                    });
+                })
+                .catch(error => console.error("Erro ao carregar setores:", error));
         }
 
         document.getElementById("id_atendente").addEventListener("change", toggleFields);
         document.getElementById("id_funcionario").addEventListener("change", toggleFields);
+        document.getElementById("id_branch").addEventListener("change", loadDepartments);
         toggleFields();
     });
 </script>
-
