@@ -11,6 +11,15 @@ class VisitorForm(forms.Form):
     class Meta:
         model = Visitor
         fields = ['name', 'cpf', 'rg', 'phone']
+
+    def save(self):
+        visitor = Visitor.objects.create(
+            name=self.cleaned_data['name'],
+            cpf=self.cleaned_data['cpf'],
+            rg=self.cleaned_data['rg'],
+            phone=self.cleaned_data['phone']
+        )
+        return visitor
     
 
 class CustomUserCreationForm(UserCreationForm):

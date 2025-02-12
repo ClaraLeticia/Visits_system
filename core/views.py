@@ -38,10 +38,17 @@ def get_visitors(request):
 @permission_required_or_403('core.add_visitor') # Decorator para verificar se o usuário tem permissão para adicionar visitantes
 def add_visitor(request):
     if request.method == 'POST':
-        form = VisitorForm()
+        form = VisitorForm(request.POST)
         if form.is_valid():
+            print("formulario válido")
             visitor = form.save()
-        return redirect('/get-visitors')
+            return redirect('/get-visitors')
+        else:
+            print("formulario inválido")
+            print(form.errors)
+            context = {'form': form}
+            return render(request, 'visitor/add_visitor.html', context)
+
     else:
         context = VisitorForm()
         form = {'form': context}
