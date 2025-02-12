@@ -80,8 +80,11 @@ def assign_user_permissions(sender, instance, created, **kwargs):
         
         if instance.atendente:
             group, _ = Group.objects.get_or_create(name="Atendentes")
-            permission = Permission.objects.get(codename="view_visitor")
-            assign_perm(permission, group)
+            # Adicionando permissões para o grupo de atendentes
+            permissions = ['add_visitor', 'view_visitor', 'delete_visitor', 'change_visitor']
+            for perm in permissions:
+                permission = Permission.objects.get(codename=perm)
+                assign_perm(permission, group)
             instance.groups.add(group)
         
         if instance.funcionario:

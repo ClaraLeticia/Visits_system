@@ -1,6 +1,17 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import CustomUser, Branch, Department
+from .models import CustomUser, Branch, Department, Visitor
+
+class VisitorForm(forms.Form):
+    name = forms.CharField(max_length=100)
+    cpf = forms.CharField(max_length=11)
+    rg = forms.CharField(max_length=9)
+    phone = forms.CharField(max_length=20)
+
+    class Meta:
+        model = Visitor
+        fields = ['name', 'cpf', 'rg', 'phone']
+    
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True)

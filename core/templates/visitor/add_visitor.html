@@ -1,0 +1,7 @@
+<h2>Registro de Visitantes</h2>
+<form method="post" id="visitorForm">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit">Registrar</button>
+</form>

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
-from core.forms import CustomUserCreationForm
+from core.forms import CustomUserCreationForm, VisitorForm
 from django.contrib import messages
 from .models import Department, Visitor
 from django.http import JsonResponse
@@ -15,8 +15,6 @@ def registerPage(request):
             user = form.save()
             return redirect('/login')
         else:
-            print('Formulário inválido')
-            print(form.errors)
             context = {'form': form}
             return render(request, 'registration/register.html', context)
     else:
@@ -35,8 +33,19 @@ def get_departments(request):
 @permission_required_or_403('core.view_visitor') # Decorator para verificar se o usuário tem permissão para visualizar visitantes
 def get_visitors(request):
     context = {'visitors':Visitor.objects.all()}
-    print(context)
     return render(request, 'visitor/list_visitors.html', context)
+
+@permission_required_or_403('core.add_visitor') # Decorator para verificar se o usuário tem permissão para adicionar visitantes
+def add_visitor(request):
+    if request.method == 'POST':
+        form = VisitorForm()
+        if form.is_valid():
+            visitor = form.save()
+        return redirect('/get-visitors')
+    else:
+        context = VisitorForm()
+        form = {'form': context}
+        return render(request, 'visitor/add_visitor.html', form)
 
 # Função para renderizar a tela de login
 def loginPage(request):
