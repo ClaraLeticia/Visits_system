@@ -5,6 +5,7 @@ from core.views import registerPage, loginPage, get_departments, get_visitors, a
 
 #Urls do aplicativo core
 urlpatterns = [
+   path('', loginPage, name='login'),
    path('register/', registerPage, name='register'),
    path('login/', loginPage, name='login'),
    path('get-departments/', get_departments, name='get_departments'),

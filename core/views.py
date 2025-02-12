@@ -40,12 +40,9 @@ def add_visitor(request):
     if request.method == 'POST':
         form = VisitorForm(request.POST)
         if form.is_valid():
-            print("formulario válido")
             visitor = form.save()
             return redirect('/get-visitors')
         else:
-            print("formulario inválido")
-            print(form.errors)
             context = {'form': form}
             return render(request, 'visitor/add_visitor.html', context)
 

@@ -61,6 +61,7 @@ class CustomUser(AbstractUser):
     atendente = models.BooleanField(default=False)
     funcionario = models.BooleanField(default=False)
     email = models.EmailField(unique=True)
+    department = models.ForeignKey('Department', on_delete=models.CASCADE, null=True, blank=True)
     branch = models.ForeignKey('Branch', on_delete=models.CASCADE, null=True, blank=True)
 
     objects = CustomUserManager()

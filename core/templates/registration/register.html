@@ -14,9 +14,12 @@
             let branchField = document.getElementById("id_branch").parentElement;
             let departmentField = document.getElementById("id_department").parentElement;
 
-            if (atendente || funcionario) {
+            if (funcionario) {
                 branchField.style.display = "block";
                 departmentField.style.display = "block";
+            } else if (atendente) {
+                branchField.style.display = "block";
+                departmentField.style.display = "none";
             } else {
                 branchField.style.display = "none";
                 departmentField.style.display = "none";
