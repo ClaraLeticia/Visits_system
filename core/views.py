@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from core.forms import CustomUserCreationForm
 from django.contrib import messages
-from .models import Department
+from .models import Department, Visitor
 from django.http import JsonResponse
-
+from guardian.decorators import permission_required_or_403
+from django.contrib.auth.decorators import login_required
 
 # Função para renderizar a tela de registro
 def registerPage(request):
@@ -22,11 +23,20 @@ def registerPage(request):
         form = CustomUserCreationForm()
         context = {'form': form}
         return render(request, 'registration/register.html', context)
-    
+
+# Função para retornar os setores de uma unidade em específico
 def get_departments(request):
     branch_id = request.GET.get('branch_id')
     departments = Department.objects.filter(branch_id=branch_id).values('id', 'name')
     return JsonResponse({'departments': list(departments)})
+
+# Função para retornar a lista de visitantes
+@login_required # Decorator para verificar se o usuário está logado
+@permission_required_or_403('core.view_visitor') # Decorator para verificar se o usuário tem permissão para visualizar visitantes
+def get_visitors(request):
+    context = {'visitors':Visitor.objects.all()}
+    print(context)
+    return render(request, 'visitor/list_visitors.html', context)
 
 # Função para renderizar a tela de login
 def loginPage(request):
@@ -38,7 +48,7 @@ def loginPage(request):
         # Se o usuário for válido, o método login é chamado e o usuário é logado no sistema
         if user is not None:
             login(request, user)
-            return redirect('/admin')
+            return redirect('/get-visitors')
         else:
         # Se o usuário não for válido, uma mensagem de erro é exibida
             messages.info(request, 'Usuário ou senha incorretos')

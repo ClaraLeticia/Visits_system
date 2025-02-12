@@ -4,7 +4,26 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
+from guardian.shortcuts import assign_perm
 # Create your models here.
+
+class Visitor(models.Model):
+    cpf = models.CharField(max_length=11, primary_key=True)
+    rg = models.CharField(max_length=9, unique=True)
+    name = models.CharField(max_length=100)
+    phone = models.CharField(max_length=20)
+    '''
+    img = models.ImageField(upload_to='visitors', null=False, blank=False)
+    img_thumbnail = ImageSpecField(source='img',
+                                   processors=[ResizeToFill(100, 50)],
+                                   format='JPEG',
+                                   options={'quality': 60})
+    '''
+
+
+    def __str__(self):
+        return self.name
+
 
 class Branch(models.Model):
     name = models.CharField(max_length=100, null=False, blank=False)
@@ -56,18 +75,18 @@ def assign_user_permissions(sender, instance, created, **kwargs):
         if instance.administrador:
             group, _ = Group.objects.get_or_create(name="Administradores")
             permission = Permission.objects.get(codename="add_branch")
-            group.permissions.add(permission)
+            assign_perm(permission, group)
             instance.groups.add(group)
         
         if instance.atendente:
             group, _ = Group.objects.get_or_create(name="Atendentes")
-            permission = Permission.objects.get(codename="add_department")
-            group.permissions.add(permission)
+            permission = Permission.objects.get(codename="view_visitor")
+            assign_perm(permission, group)
             instance.groups.add(group)
         
         if instance.funcionario:
             group, _ = Group.objects.get_or_create(name="Funcionários")
-            permission = Permission.objects.get(codename="  view_department")
-            group.permissions.add(permission)
+            permission = Permission.objects.get(codename="view_department")
+            assign_perm(permission, group)
             instance.groups.add(group)
 
