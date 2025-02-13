@@ -4,7 +4,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
-from guardian.shortcuts import assign_perm
+from guardian.shortcuts import assign_perm, assign, remove_perm
 # Create your models here.
 
 class Visitor(models.Model):
@@ -69,16 +69,6 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.username
     
-class Visits(models.Model):
-    visitor = models.ForeignKey('Visitor', on_delete=models.CASCADE)
-    user = models.ForeignKey('CustomUser', on_delete=models.CASCADE, null=True, blank=True)
-    department = models.ForeignKey('Department', on_delete=models.CASCADE)
-    date = models.DateTimeField()
-
-    def __str__(self):
-        return f"visita realizada por {self.visitor.name} em {self.date}"
-    
-    
 @receiver(post_save, sender=CustomUser)
 def assign_user_permissions(sender, instance, created, **kwargs):
     if created:
@@ -99,7 +89,32 @@ def assign_user_permissions(sender, instance, created, **kwargs):
         
         if instance.funcionario:
             group, _ = Group.objects.get_or_create(name="Funcionários")
-            permission = Permission.objects.get(codename="view_department")
-            assign_perm(permission, group)
+            assign('core.dg_view_visits', group)
             instance.groups.add(group)
+
+    
+class Visits(models.Model):
+    visitor = models.ForeignKey('Visitor', on_delete=models.CASCADE)
+    user = models.ForeignKey('CustomUser', on_delete=models.CASCADE, null=True, blank=True)
+    department = models.ForeignKey('Department', on_delete=models.CASCADE)
+    date = models.DateTimeField()
+
+    def __str__(self):
+        return self.visitor.name
+    
+    class Meta:
+        permissions = [
+            ("dg_view_visits", "employee can view visits"),
+        ]
+
+@receiver(post_save, sender=Visits)
+def set_permission(sender, instance, **kwargs):
+    if instance.user:
+        # Remove a permissão de outros usuários para evitar acessos indevidos
+        remove_perm("core.dg_view_visits", instance.user, instance)
+        # Garante que apenas o usuário correto tenha acesso à visita
+        assign_perm("core.dg_view_visits", instance.user, instance)
+
+
+    
 

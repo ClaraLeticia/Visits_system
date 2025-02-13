@@ -2,13 +2,15 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from core.forms import CustomUserCreationForm, VisitorForm, VisitsForm
 from django.contrib import messages
-from .models import Department, Visitor, CustomUser
+from .models import Department, Visitor, CustomUser, Visits
 from django.http import JsonResponse
 from guardian.decorators import permission_required_or_403
+from guardian.shortcuts import get_objects_for_user
 from django.contrib.auth.decorators import login_required
 
 
-######################################## VISITAS ########################################
+######################################## ATENDETENTE ########################################
+## Cadastro de visitas
 @login_required
 @permission_required_or_403('core.add_visits')
 def add_visit(request):
@@ -29,24 +31,7 @@ def add_visit(request):
         context = {'form': form}
         return render(request, 'visits/add_visit.html', context)
     
-######################################## VISITANTES ########################################
- # Função para retornar a lista de visitantes
-@login_required # Decorator para verificar se o usuário está logado
-@permission_required_or_403('core.view_visitor') # Decorator para verificar se o usuário tem permissão para visualizar visitantes
-def get_visitors(request):
-    cpf = request.GET.get('cpf')
-    visitor = Visitor.objects.filter(cpf=cpf)
-    if visitor:
-        visitor = visitor.first()
-        return JsonResponse({
-            'name': visitor.name,
-            'rg': visitor.rg,
-            'phone': visitor.phone
-            
-        })
-    else:
-        return JsonResponse({'error': 'Visitante não encontrado'})
-    
+# Cadastro de visitante    
 @permission_required_or_403('core.add_visitor') # Decorator para verificar se o usuário tem permissão para adicionar visitantes
 def add_visitor(request):
     if request.method == 'POST':
@@ -64,6 +49,36 @@ def add_visitor(request):
         context = VisitorForm()
         form = {'form': context}
         return render(request, 'visitor/add_visitor.html', form)
+    
+ # Função para retornar a lista de visitantes
+@login_required # Decorator para verificar se o usuário está logado
+@permission_required_or_403('core.view_visitor') # Decorator para verificar se o usuário tem permissão para visualizar visitantes
+def get_visitors_by_cpf(request):
+    cpf = request.GET.get('cpf')
+    visitor = Visitor.objects.filter(cpf=cpf)
+    if visitor:
+        visitor = visitor.first()
+        return JsonResponse({
+            'name': visitor.name,
+            'rg': visitor.rg,
+            'phone': visitor.phone
+            
+        })
+    else:
+        return JsonResponse({'error': 'Visitante não encontrado'})
+
+######################################## Funcionario ########################################
+def get_visits_by_func(request):
+    user = request.user
+    print(f"Usuário logado: {user}")
+    print(f"Permissões do usuário: {user.get_all_permissions()}")
+
+    # Obtém apenas as visitas para as quais o usuário tem permissão
+    visits = get_objects_for_user(user, 'core.dg_view_visits', klass=Visits)
+
+    print(f"Visitas filtradas: {visits}")
+    return render(request, 'employee/get_visits.html', {'visits': visits})
+    
 
 ######################################## USUÁRIOS ########################################
 # Função para renderizar a tela de registro
