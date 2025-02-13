@@ -21,7 +21,7 @@ class VisitsForm(forms.ModelForm):
         return visit
 
 
-class VisitorForm(forms.ModelForm):
+class VisitorForm(forms.Form):
     name = forms.CharField(max_length=100)
     cpf = forms.CharField(max_length=11)
     rg = forms.CharField(max_length=9)
@@ -31,11 +31,11 @@ class VisitorForm(forms.ModelForm):
         model = Visitor
         fields = ['name', 'cpf', 'rg', 'phone']
 
-    def save(self):
+    def save(self, commit=True):
         visitor, created = Visitor.objects.update_or_create(
-            name=self.cleaned_data['name'],
+            cpf=self.cleaned_data['cpf'],
             defaults={
-                'cpf': self.cleaned_data['cpf'],
+                'name': self.cleaned_data['name'],
                 'rg': self.cleaned_data['rg'],
                 'phone': self.cleaned_data['phone']
             }
