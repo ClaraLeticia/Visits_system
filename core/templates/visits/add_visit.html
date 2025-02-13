@@ -1,0 +1,30 @@
+<h2>Registro de Visitas</h2>
+<form method="post" id="visitsForm">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit">Registrar</button>
+</form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        function loadFuncUser() {
+            let departmentId = document.getElementById("id_department").value;
+            let userSelect = document.getElementById("id_user");
+
+            fetch(`/get-func-user/?department_id=${departmentId}`)
+                .then(response => response.json())
+                .then(data => {
+                    userSelect.innerHTML = '<option value="">Selecione um funcionario</option>';
+                    data.users.forEach(user => {
+                        console.log(user)
+                        let option = new Option(user.username, user.id);
+                        userSelect.add(option);
+                    });
+                })
+                .catch(error => console.error("erro ao carregar funcionarios", error));
+        }
+
+        document.getElementById("id_department").addEventListener("change", loadFuncUser);
+    });
+</script>

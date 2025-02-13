@@ -1,7 +1,57 @@
-<h2>Registro de Visitantes</h2>
-<form method="post" id="visitorForm">
-    {% csrf_token %}
-    {{ form.as_p }}
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Visita</title>
+</head>
+<body>
+    <h2>Registrar Visita</h2>
+    <form id="visitante-form" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <label>CPF:</label>
+        <input type="text" id="cpf" name="cpf" required oninput="buscarVisitante()">
+        
+        <label>Nome:</label>
+        <input type="text" id="name" name="name" required>
 
-    <button type="submit">Registrar</button>
-</form>
+        <label>RG:</label>
+        <input type="text" id="rg" name="rg">
+
+        <label>Telefone:</label>
+        <input type="text" id="phone" name="phone">
+
+        <label>Foto:</label>
+        <input type="file" id="foto" name="foto" accept="image/*">
+
+        <button type="submit">Registrar</button>
+    </form>
+
+    <script>
+        function buscarVisitante() {
+            let cpf = document.getElementById('cpf').value;
+            
+            // Verifica se o CPF tem 11 dígitos antes de buscar
+            if (cpf.length === 11) {
+                fetch(`/get-visitors/?cpf=${cpf}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.error) {
+                        document.getElementById('name').value = data.name;
+                        document.getElementById('rg').value = data.rg;
+                        document.getElementById('phone').value = data.phone;
+
+                    } else {
+                        // Caso o visitante não exista, limpar os campos
+                        document.getElementById('nome').value = "";
+                        document.getElementById('rg').value = "";
+                        document.getElementById('telefone').value = "";
+                    }
+                })
+                .catch(error => console.error('Erro ao buscar visitante:', error));
+            }
+        }
+    </script>
+</body>
+</html>

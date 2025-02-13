@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
-from .models import CustomUser, Branch , Department, Visitor
+from .models import CustomUser, Branch , Department, Visitor, Visits
 
 # Register your models here.
 
@@ -25,3 +25,5 @@ admin.site.register(Branch, CustomBranchAdmin)
 admin.site.register(Department, CustomDepartmentAdmin)
 
 admin.site.register(Visitor)
+
+admin.site.register(Visits)

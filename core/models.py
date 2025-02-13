@@ -69,6 +69,15 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.username
     
+class Visits(models.Model):
+    visitor = models.ForeignKey('Visitor', on_delete=models.CASCADE)
+    user = models.ForeignKey('CustomUser', on_delete=models.CASCADE, null=True, blank=True)
+    department = models.ForeignKey('Department', on_delete=models.CASCADE)
+    date = models.DateTimeField()
+
+    def __str__(self):
+        return f"visita realizada por {self.visitor.name} em {self.date}"
+    
     
 @receiver(post_save, sender=CustomUser)
 def assign_user_permissions(sender, instance, created, **kwargs):
@@ -82,7 +91,7 @@ def assign_user_permissions(sender, instance, created, **kwargs):
         if instance.atendente:
             group, _ = Group.objects.get_or_create(name="Atendentes")
             # Adicionando permissões para o grupo de atendentes
-            permissions = ['add_visitor', 'view_visitor', 'delete_visitor', 'change_visitor']
+            permissions = ['add_visitor', 'view_visitor', 'delete_visitor', 'change_visitor', 'add_visits', 'change_visits']
             for perm in permissions:
                 permission = Permission.objects.get(codename=perm)
                 assign_perm(permission, group)
