@@ -13,15 +13,18 @@ from django.contrib.auth.decorators import login_required
 @permission_required_or_403('core.add_visits')
 def add_visit(request):
     if request.method == 'POST':
+        cpf = request.GET.get('cpf')
+        visitor = Visitor.objects.get(cpf=cpf)
         form = VisitsForm(request.POST)
         if form.is_valid():
+            visit = form.save(commit=False)
+            visit.visitor = visitor
             visit = form.save()
             return redirect('/get-visitors')
         else:
             context = {'form': form}
             return render(request, 'visits/add_visit.html', context)
     else:
-        print(request.user.has_perm('core.add_visits'))
         form = VisitsForm()
         context = {'form': form}
         return render(request, 'visits/add_visit.html', context)
@@ -50,15 +53,16 @@ def add_visitor(request):
         form = VisitorForm(request.POST)
         if form.is_valid():
             visitor = form.save()
-            return redirect('/add-visit')
+            print("visitor cpf AQUI", visitor.cpf)
+            return redirect(f'/add-visit/?cpf={visitor.cpf}')
         else:
+            print(form.errors)
             context = {'form': form}
             return render(request, 'visitor/add_visitor.html', context)
 
     else:
         context = VisitorForm()
         form = {'form': context}
-        print(form)
         return render(request, 'visitor/add_visitor.html', form)
 
 ######################################## USUÁRIOS ########################################
@@ -86,7 +90,6 @@ def get_departments(request):
 def get_func_user(request):
     department_id = request.GET.get('department_id')
     users = CustomUser.objects.filter(department_id=department_id, funcionario = True).values('id', 'username')
-    print(users)
     return JsonResponse({'users': list(users)})
 
 
@@ -100,7 +103,7 @@ def loginPage(request):
         # Se o usuário for válido, o método login é chamado e o usuário é logado no sistema
         if user is not None:
             login(request, user)
-            return redirect('/get-visitors')
+            return redirect('/add-visitors')
         else:
         # Se o usuário não for válido, uma mensagem de erro é exibida
             messages.info(request, 'Usuário ou senha incorretos')

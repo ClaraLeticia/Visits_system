@@ -1,3 +1,4 @@
 django
 psycopg2
 django-guardian
+django-imagekit

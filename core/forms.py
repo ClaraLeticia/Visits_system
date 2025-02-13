@@ -4,26 +4,24 @@ from .models import CustomUser, Branch, Department, Visitor, Visits
 from django.utils import timezone
 from datetime import timedelta
 
-class VisitsForm(forms.Form):
-    visitor = forms.ModelChoiceField(queryset=Visitor.objects.all(), empty_label="Selecione um visitante")
+class VisitsForm(forms.ModelForm):
     department = forms.ModelChoiceField(queryset=Department.objects.all(), empty_label="Selecione um setor")
     user = forms.ModelChoiceField(queryset=CustomUser.objects.all(), empty_label="Selecione um funcionário", required=False)
 
     class Meta:
         model = Visits
-        fields = ['visitor', 'department']
+        fields = ['department', 'user']
 
-    def save(self):
-        visit = Visits.objects.create(
-            visitor=self.cleaned_data['visitor'],
-            department=self.cleaned_data['department'],
-            date= timezone.now() + timedelta(weeks=1, hours=-3),
-            user=self.cleaned_data.get('user') # Lidar com o campo opcional
-        )
+    def save(self, commit=True):
+        visit = super().save(commit=False)
+        visit.date = timezone.now() + timedelta(weeks=1, hours=-3)
+        visit.user = self.cleaned_data.get('user')  # Lidar com o campo opcional
+        if commit:
+            visit.save()
         return visit
 
 
-class VisitorForm(forms.Form):
+class VisitorForm(forms.ModelForm):
     name = forms.CharField(max_length=100)
     cpf = forms.CharField(max_length=11)
     rg = forms.CharField(max_length=9)
@@ -34,11 +32,13 @@ class VisitorForm(forms.Form):
         fields = ['name', 'cpf', 'rg', 'phone']
 
     def save(self):
-        visitor = Visitor.objects.aupdate_or_create(
+        visitor, created = Visitor.objects.update_or_create(
             name=self.cleaned_data['name'],
-            cpf=self.cleaned_data['cpf'],
-            rg=self.cleaned_data['rg'],
-            phone=self.cleaned_data['phone']
+            defaults={
+                'cpf': self.cleaned_data['cpf'],
+                'rg': self.cleaned_data['rg'],
+                'phone': self.cleaned_data['phone']
+            }
         )
         return visitor
 
