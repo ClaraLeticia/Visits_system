@@ -1,18 +1,17 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
-from core.forms import CustomUserCreationForm, VisitorForm, VisitsForm
+from core.forms import *
 from django.contrib import messages
 from .models import Department, Visitor, CustomUser, Visits
 from django.http import JsonResponse
 from guardian.decorators import permission_required_or_403
-from guardian.shortcuts import get_objects_for_user
 from django.contrib.auth.decorators import login_required
 
 
 ######################################## ATENDETENTE ########################################
 ## Cadastro de visitas
-@login_required
-@permission_required_or_403('core.add_visits')
+#@login_required
+#@permission_required_or_403('core.add_visits')
 def add_visit(request):
     if request.method == 'POST':
         cpf = request.GET.get('cpf')
@@ -32,7 +31,7 @@ def add_visit(request):
         return render(request, 'visits/add_visit.html', context)
     
 # Cadastro de visitante    
-@permission_required_or_403('core.add_visitor') # Decorator para verificar se o usuário tem permissão para adicionar visitantes
+#@permission_required_or_403('core.add_visitor') # Decorator para verificar se o usuário tem permissão para adicionar visitantes
 def add_visitor(request):
     if request.method == 'POST':
         form = VisitorForm(request.POST)
@@ -51,8 +50,8 @@ def add_visitor(request):
         return render(request, 'visitor/add_visitor.html', form)
     
  # Função para retornar a lista de visitantes
-@login_required # Decorator para verificar se o usuário está logado
-@permission_required_or_403('core.view_visitor') # Decorator para verificar se o usuário tem permissão para visualizar visitantes
+#@login_required # Decorator para verificar se o usuário está logado
+#@permission_required_or_403('core.view_visitor') # Decorator para verificar se o usuário tem permissão para visualizar visitantes
 def get_visitors_by_cpf(request):
     cpf = request.GET.get('cpf')
     visitor = Visitor.objects.filter(cpf=cpf)
@@ -68,16 +67,17 @@ def get_visitors_by_cpf(request):
         return JsonResponse({'error': 'Visitante não encontrado'})
 
 ######################################## Funcionario ########################################
-@login_required
-@permission_required_or_403('core.change_confirm_visits_employee')
+#@login_required
+#@permission_required_or_403('core.change_confirm_visits_employee')
 def get_visits_by_func(request):
     visits = Visits.objects.filter(user=request.user).values('visitor__name', 'status', 'date', 'id')
 
     return render(request, 'employee/get_visits.html', {'visits': visits})
 
-@login_required
-@permission_required_or_403('core.change_confirm_visits_employee')
+#@login_required
+#@permission_required_or_403('core.change_confirm_visits_employee')
 def confirm_visit(request):
+    print(request.GET.get('visit_id'))
     visit_id = request.GET.get('visit_id')
     print(visit_id)
     visit = Visits.objects.get(id=visit_id)
@@ -86,7 +86,7 @@ def confirm_visit(request):
     return JsonResponse({'success': 'Visita confirmada com sucesso'})
     
 
-######################################## USUÁRIOS ########################################
+######################################## ADMINISTRADOR ########################################
 # Função para renderizar a tela de registro
 def registerPage(request):
     if request.method == 'POST':
@@ -114,6 +114,35 @@ def get_func_user(request):
     return JsonResponse({'users': list(users)})
 
 
+def add_branch(request):
+    if request.method == 'POST':
+        form = BranchForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/add-branch')
+        else:
+            context = {'form': form}
+            return render(request, 'admin/add_branch.html', context)
+    else:
+        form = BranchForm()
+        context = {'form': form}
+        return render(request, 'admin/add_branch.html', context)
+    
+def add_department(request):
+    if request.method == 'POST':
+        form = DepartmentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/add-department')
+        else:
+            context = {'form': form}
+            return render(request, 'admin/add_department.html', context)
+    else:
+        form = DepartmentForm()
+        context = {'form': form}
+        return render(request, 'admin/add_department.html', context)
+
+######################################## ADMINISTRADOR ########################################
 # Função para renderizar a tela de login
 def loginPage(request):
     if request.method == 'POST':
@@ -133,3 +162,16 @@ def loginPage(request):
     else:
         # Se o método for diferente de POST, a página de login é renderizada
         return render(request, 'registration/login.html')
+    
+
+###################################### TESTES ###########################################
+
+### Preparando crud branch ###
+def list_branches(request):
+    branchs = Branch.objects.all()
+    print(branchs)
+    return render(request, 'admin/list_branches.html', {'branches': branchs})
+
+
+
+    

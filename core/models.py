@@ -35,7 +35,8 @@ class Branch(models.Model):
 class Department(models.Model):
     name = models.CharField(max_length=100, null=False, blank=False)
     branch = models.ForeignKey('Branch', on_delete=models.CASCADE, null=False, blank=False)
-    
+    description = models.TextField(null=True, blank=True)
+
     def __str__(self):
         return self.name
 
@@ -57,12 +58,18 @@ class CustomUserManager(BaseUserManager):
 
 # Customizando os campos de usuário para adicionar os campos de nivel de acesso
 class CustomUser(AbstractUser):
+    choices = (
+        ('Ativo', 'Ativo'),
+        ('Inativo', 'Inativo'),
+    )
+
     administrador = models.BooleanField(default=False)
     atendente = models.BooleanField(default=False)
     funcionario = models.BooleanField(default=False)
     email = models.EmailField(unique=True)
     department = models.ForeignKey('Department', on_delete=models.CASCADE, null=True, blank=True)
     branch = models.ForeignKey('Branch', on_delete=models.CASCADE, null=True, blank=True)
+    status = models.CharField(max_length=10, choices=choices, default='Ativo')
 
     objects = CustomUserManager()
     

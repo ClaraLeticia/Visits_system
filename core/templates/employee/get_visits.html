@@ -14,6 +14,7 @@
                 <tr>
                     <th>Nome</th>
                     <th>Situação</th>
+                    <td>{{ visit.status }}</td>
                 </tr>
             </thead>
             <tbody>
@@ -22,7 +23,7 @@
                     <td>{{ visit.visitor__name }}</td>
                     <td>{{ visit.status }}</td>
                     <td>
-                        <button class="btn btn-primary" >Confirmar</button>
+                       <a href='/confirm-visit/?visit_id={{ visit.id }}'>Confirmar</a>
                     </td>
                 </tr>
                 {% empty %}

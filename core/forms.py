@@ -4,9 +4,25 @@ from .models import CustomUser, Branch, Department, Visitor, Visits
 from django.utils import timezone
 from datetime import timedelta
 
+class BranchForm(forms.Form):
+    class Meta:
+        model = Branch
+        fields = ['name', 'description']
+    
+
+class DepartmentForm(forms.Form):
+    branch = forms.ModelChoiceField(queryset=Branch.objects.all(), empty_label="Selecione uma unidade")
+
+    class Meta:
+        model = Department
+        fields = ['name', 'branch', 'description']
+
+
 class VisitsForm(forms.ModelForm):
+    '''
     department = forms.ModelChoiceField(queryset=Department.objects.all(), empty_label="Selecione um setor")
     user = forms.ModelChoiceField(queryset=CustomUser.objects.all(), empty_label="Selecione um funcionário", required=False)
+    '''
 
     class Meta:
         model = Visits

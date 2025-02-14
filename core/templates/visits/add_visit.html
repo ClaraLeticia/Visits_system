@@ -9,10 +9,27 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        function loadDepartments(){
+            let branchId = {{ user.branch_id }};
+            let departmentSelect = document.getElementById("id_department");
+            fetch(`/get-departments/?branch_id=${branchId}`)
+                .then(response => response.json())
+                .then(data => {
+                    departmentSelect.innerHTML = '<option value="">Selecione um departamento</option>';
+                    data.departments.forEach(department => {
+                        console.log(department)
+                        let option = new Option(department.name, department.id);
+                        departmentSelect.add(option);
+                    });
+                })
+                .catch(error => console.error("erro ao carregar departamentos", error));
+        }
+        loadDepartments();
+
+
         function loadFuncUser() {
             let departmentId = document.getElementById("id_department").value;
             let userSelect = document.getElementById("id_user");
-
             fetch(`/get-func-user/?department_id=${departmentId}`)
                 .then(response => response.json())
                 .then(data => {
