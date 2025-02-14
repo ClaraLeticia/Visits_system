@@ -7,10 +7,9 @@ from guardian.admin import  GuardedModelAdmin
 
 user = get_user_model()
 
-class VisitsAdmin(GuardedModelAdmin):
-    pass
 
-admin.site.register(Visits, VisitsAdmin)
+
+admin.site.register(Visits)
 
 # Customizando a exibição dos usuários no painel de administração
 class CustomUserAdmin(admin.ModelAdmin):

@@ -68,16 +68,22 @@ def get_visitors_by_cpf(request):
         return JsonResponse({'error': 'Visitante não encontrado'})
 
 ######################################## Funcionario ########################################
+@login_required
+@permission_required_or_403('core.change_confirm_visits_employee')
 def get_visits_by_func(request):
-    user = request.user
-    print(f"Usuário logado: {user}")
-    print(f"Permissões do usuário: {user.get_all_permissions()}")
+    visits = Visits.objects.filter(user=request.user).values('visitor__name', 'status', 'date', 'id')
 
-    # Obtém apenas as visitas para as quais o usuário tem permissão
-    visits = get_objects_for_user(user, 'core.dg_view_visits', klass=Visits)
-
-    print(f"Visitas filtradas: {visits}")
     return render(request, 'employee/get_visits.html', {'visits': visits})
+
+@login_required
+@permission_required_or_403('core.change_confirm_visits_employee')
+def confirm_visit(request):
+    visit_id = request.GET.get('visit_id')
+    print(visit_id)
+    visit = Visits.objects.get(id=visit_id)
+    visit.status = 'Confirmada'
+    visit.save()
+    return JsonResponse({'success': 'Visita confirmada com sucesso'})
     
 
 ######################################## USUÁRIOS ########################################

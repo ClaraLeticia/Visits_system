@@ -51,10 +51,11 @@ class CustomUserCreationForm(UserCreationForm):
     funcionario = forms.BooleanField(required=False)
     branch = forms.ModelChoiceField(queryset=Branch.objects.all(), required=False, empty_label="Selecione uma unidade")
     department = forms.ModelChoiceField(queryset=Department.objects.all(), required=False, empty_label="Selecione um setor")
-
+    first_name = forms.CharField(max_length=30, required=True)
+    last_name = forms.CharField(max_length=30, required=True)
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'password1', 'password2', 'administrador', 'atendente', 'funcionario', 'branch', 'department']
+        fields = ['username', 'email', 'password1', 'password2', 'administrador', 'atendente', 'funcionario', 'branch', 'department', 'first_name', 'last_name']
 
 
     def clean(self):
@@ -66,8 +67,8 @@ class CustomUserCreationForm(UserCreationForm):
 
         # Se for atendente ou funcionário, a unidade e setor são obrigatórios
         if (atendente) and not branch:
-            self.add_error("branch", "Unidade é obrigatória para Atendentes e Funcionários.")
+            self.add_error("branch", "Unidade é obrigatória para Atendentes.")
         if (funcionario) and not department and not branch:
-            self.add_error("department", "Setor é obrigatório para Atendentes e Funcionários.")
+            self.add_error("department", "Unidade e Setor é obrigatório para Funcionários.")
 
         return cleaned_data

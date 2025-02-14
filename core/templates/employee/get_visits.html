@@ -12,22 +12,17 @@
         <table class="table table-striped">
             <thead class="table-dark">
                 <tr>
-                    <th>CPF</th>
-                    <th>RG</th>
                     <th>Nome</th>
-                    <th>Telefone</th>
-                    <th>Ações</th>
+                    <th>Situação</th>
                 </tr>
             </thead>
             <tbody>
-                {% for visitor in visits %}
+                {% for visit in visits %}
                 <tr>
-                    <td>{{ visitor.cpf }}</td>
-                    <td>{{ visitor.rg }}</td>
-                    <td>{{ visitor.name }}</td>
-                    <td>{{ visitor.phone }}</td>
+                    <td>{{ visit.visitor__name }}</td>
+                    <td>{{ visit.status }}</td>
                     <td>
-                        <a href="\add-visit" class="btn btn-primary btn-sm">Confirmar visita</a>
+                        <button class="btn btn-primary" >Confirmar</button>
                     </td>
                 </tr>
                 {% empty %}

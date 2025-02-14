@@ -74,26 +74,25 @@ def assign_user_permissions(sender, instance, created, **kwargs):
     if created:
         if instance.administrador:
             group, _ = Group.objects.get_or_create(name="Administradores")
-            permission = Permission.objects.get(codename="add_branch")
-            assign_perm(permission, group)
+            assign('core.add_branch', group)
             instance.groups.add(group)
         
         if instance.atendente:
             group, _ = Group.objects.get_or_create(name="Atendentes")
             # Adicionando permissões para o grupo de atendentes
-            permissions = ['add_visitor', 'view_visitor', 'delete_visitor', 'change_visitor', 'add_visits', 'change_visits']
+            permissions = ['core.add_visitor', 'core.view_visitor', 'core.delete_visitor', 'core.change_visitor', 'core.add_visits',]
             for perm in permissions:
-                permission = Permission.objects.get(codename=perm)
-                assign_perm(permission, group)
+                assign(perm, group)
             instance.groups.add(group)
         
         if instance.funcionario:
             group, _ = Group.objects.get_or_create(name="Funcionários")
-            assign('core.dg_view_visits', group)
+            assign('core.change_confirm_visits_employee', group)
             instance.groups.add(group)
 
     
 class Visits(models.Model):
+    status = models.CharField(max_length=20, default='Agendada')
     visitor = models.ForeignKey('Visitor', on_delete=models.CASCADE)
     user = models.ForeignKey('CustomUser', on_delete=models.CASCADE, null=True, blank=True)
     department = models.ForeignKey('Department', on_delete=models.CASCADE)
@@ -104,17 +103,8 @@ class Visits(models.Model):
     
     class Meta:
         permissions = [
-            ("dg_view_visits", "employee can view visits"),
+            ('change_confirm_visits_employee', 'employee can change the status of visits'),
         ]
-
-@receiver(post_save, sender=Visits)
-def set_permission(sender, instance, **kwargs):
-    if instance.user:
-        # Remove a permissão de outros usuários para evitar acessos indevidos
-        remove_perm("core.dg_view_visits", instance.user, instance)
-        # Garante que apenas o usuário correto tenha acesso à visita
-        assign_perm("core.dg_view_visits", instance.user, instance)
-
 
     
 
