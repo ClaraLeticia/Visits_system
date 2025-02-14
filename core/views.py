@@ -122,11 +122,11 @@ def add_branch(request):
             return redirect('/add-branch')
         else:
             context = {'form': form}
-            return render(request, 'admin/add_branch.html', context)
+            return render(request, 'admin/branches/add_branch.html', context)
     else:
         form = BranchForm()
         context = {'form': form}
-        return render(request, 'admin/add_branch.html', context)
+        return render(request, 'admin/branches/add_branch.html', context)
     
 def add_department(request):
     if request.method == 'POST':
@@ -136,11 +136,11 @@ def add_department(request):
             return redirect('/add-department')
         else:
             context = {'form': form}
-            return render(request, 'admin/add_department.html', context)
+            return render(request, 'admin/branches/add_department.html', context)
     else:
         form = DepartmentForm()
         context = {'form': form}
-        return render(request, 'admin/add_department.html', context)
+        return render(request, 'admin/branches/add_department.html', context)
 
 ######################################## ADMINISTRADOR ########################################
 # Função para renderizar a tela de login
@@ -169,7 +169,7 @@ def loginPage(request):
 ### Preparando crud branch ###
 def list_branches(request):
     branchs = Branch.objects.all()
-    return render(request, 'admin/list_branches.html', {'branches': branchs})
+    return render(request, 'admin/branches/list_branches.html', {'branches': branchs})
 
 def update_branch(request, pk):
     branch = Branch.objects.get(id=pk)
@@ -180,11 +180,29 @@ def update_branch(request, pk):
             return redirect('/list-branches')
         else:
             context = {'form': form}
-            return render(request, 'admin/update_branch.html', context)
+            return render(request, 'admin/branches/update_branch.html', context)
     else:
-        return render(request, 'admin/update_branch.html', {'branch': branch})
+        return render(request, 'admin/branches/update_branch.html', {'branch': branch})
+    
 
 
+#### prerando crud para setores ###
+def list_departments(request):
+    departments = Department.objects.all()
+    return render(request, 'admin/departments/list_departments.html', {'departments': departments})
+
+def update_department(request, pk):
+    department = Department.objects.get(id=pk)
+    if request.method == 'POST':
+        form = DepartmentForm(request.POST)
+        if form.is_valid():
+            form.save(department=pk)
+            return redirect('/list-departments')
+        else:
+            context = {'form': form}
+            return render(request, 'admin/departments/update_department.html', context)
+    else:
+        return render(request, 'admin/departments/update_department.html', {'department': department})
 
 
     
