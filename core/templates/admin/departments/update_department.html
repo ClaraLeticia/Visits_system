@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atualizar Unidade</title>
+</head>
+<body>
+    <h2>Atualizar Unidade</h2>
+    <form id="department-form" method="POST">
+        {% csrf_token %}
+        
+        <label>Nome:</label>
+        <input type="text" id="name" name="name" value="{{ department.name }}" required>
+        
+        <label>Descrição:</label>
+        <input type="text" id="description" name="description" value="{{ department.description }}" required>
+
+        <label>Setor:</label>
+        <select id="branch" name="branch" required>
+            <option value="">Selecione uma unidade</option>
+            {% for branch in branches %}
+            <option value="{{ branch.id }}" {% if branch.id == department.branch.id %} selected {% endif %}>{{ branch.name }}</option>
+            {% endfor %}
+        </select>
+        
+        <button type="submit">Atualizar</button>
+    </form>
+</body>
+</html>

@@ -19,12 +19,22 @@ class BranchForm(forms.ModelForm):
         )
         return branch
 
-class DepartmentForm(forms.Form):
+class DepartmentForm(forms.ModelForm):
     branch = forms.ModelChoiceField(queryset=Branch.objects.all(), empty_label="Selecione uma unidade")
-
     class Meta:
         model = Department
         fields = ['name', 'branch', 'description']
+
+    def save(self, commit=True, department=None):
+        department = Department.objects.update_or_create(
+            id=department,
+            defaults={
+                'name': self.cleaned_data['name'],
+                'branch': self.cleaned_data['branch'],
+                'description': self.cleaned_data['description']
+            }
+        )
+        return department
 
 
 class VisitsForm(forms.ModelForm):

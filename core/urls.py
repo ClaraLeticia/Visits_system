@@ -19,4 +19,6 @@ urlpatterns = [
    path('add-department/', add_department, name='add_department'),
    path('list-branches/', list_branches, name='list_branches'),
    path('update-branch/<int:pk>', update_branch, name='update_branch'),
+   path('list-departments/', list_departments, name='list_departments'),
+   path('update-department/<int:pk>', update_department, name='update_department'),
 ]

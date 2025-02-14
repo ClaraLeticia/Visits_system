@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
 from core.forms import *
 from django.contrib import messages
@@ -136,11 +136,11 @@ def add_department(request):
             return redirect('/add-department')
         else:
             context = {'form': form}
-            return render(request, 'admin/branches/add_department.html', context)
+            return render(request, 'admin/departments/add_department.html', context)
     else:
         form = DepartmentForm()
         context = {'form': form}
-        return render(request, 'admin/branches/add_department.html', context)
+        return render(request, 'admin/departments/add_department.html', context)
 
 ######################################## ADMINISTRADOR ########################################
 # Função para renderizar a tela de login
@@ -172,7 +172,7 @@ def list_branches(request):
     return render(request, 'admin/branches/list_branches.html', {'branches': branchs})
 
 def update_branch(request, pk):
-    branch = Branch.objects.get(id=pk)
+    branch = get_object_or_404(Branch, id=pk)
     if request.method == 'POST':
         form = BranchForm(request.POST)
         if form.is_valid():
@@ -190,19 +190,24 @@ def update_branch(request, pk):
 def list_departments(request):
     departments = Department.objects.all()
     return render(request, 'admin/departments/list_departments.html', {'departments': departments})
+    
 
 def update_department(request, pk):
-    department = Department.objects.get(id=pk)
+    department = get_object_or_404(Department, id=pk)
+    branches = Branch.objects.all()
+    form = DepartmentForm(instance=department)
     if request.method == 'POST':
-        form = DepartmentForm(request.POST)
-        if form.is_valid():
-            form.save(department=pk)
-            return redirect('/list-departments')
-        else:
-            context = {'form': form}
-            return render(request, 'admin/departments/update_department.html', context)
+        department.name = request.POST.get('name')
+        department.branch_id = request.POST.get('branch')
+        department.description = request.POST.get('description')
+        department.save()
+        return redirect('/list-departments')
+
     else:
-        return render(request, 'admin/departments/update_department.html', {'department': department})
+        return render(request, 'admin/departments/update_department.html', {'department': department,'branches': branches})
+    
+
+
 
 
     
