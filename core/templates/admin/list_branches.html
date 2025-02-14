@@ -9,11 +9,30 @@
 <body>
     <div class="container mt-5">
         <h1 class="mb-4">Lista de Unidades</h1>
-        <ul class="list-group">
-            {% for branch in branches %}
-                <li class="list-group-item">{{ branch.name }}</li>
-            {% endfor %}
-        </ul>
+		<table class="table table-striped">
+			<thead class="table-dark">
+				<tr>
+					<th>Unidade</th>
+					<th>Descrição</th>
+					<th>Ações</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for branch in branches %}
+				<tr>
+					<td>{{ branch.name }}</td>
+					<td>{{ branch.description }}</td>
+					<td>
+						<a href="/update-branch/{{ branch.id }}" class="btn btn-primary">Editar</a>
+						<a href="/delete-branch/?branch_id={{ branch.id }}" class="btn btn-danger">Excluir</a>
+					</td>
+				</tr>
+				{% empty %}
+				<tr>
+					<td colspan="3" class="text-center">Nenhuma unidade encontrada.</td>
+				</tr>
+				{% endfor %}
+			</tbody>
     </div>
 </body>
 </html>

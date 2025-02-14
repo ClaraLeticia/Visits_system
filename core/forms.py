@@ -4,11 +4,20 @@ from .models import CustomUser, Branch, Department, Visitor, Visits
 from django.utils import timezone
 from datetime import timedelta
 
-class BranchForm(forms.Form):
+class BranchForm(forms.ModelForm):
     class Meta:
         model = Branch
         fields = ['name', 'description']
     
+    def save(self, commit=True, branch=None):  
+        branch = Branch.objects.update_or_create(
+            id=branch, 
+            defaults={
+                'name': self.cleaned_data['name'],
+                'description': self.cleaned_data['description']
+            }
+        )
+        return branch
 
 class DepartmentForm(forms.Form):
     branch = forms.ModelChoiceField(queryset=Branch.objects.all(), empty_label="Selecione uma unidade")

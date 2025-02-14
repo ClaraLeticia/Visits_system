@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atualizar Unidade</title>
+</head>
+<body>
+    <h2>Atualizar Unidade</h2>
+    <form id="branch-form" method="POST">
+        {% csrf_token %}
+        
+        <label>Nome:</label>
+        <input type="text" id="name" name="name" value="{{ branch.name }}" required>
+        
+        <label>Descrição:</label>
+        <input type="text" id="description" name="description" value="{{ branch.description }}" required>
+        
+        <button type="submit">Atualizar</button>
+    </form>
+</body>
+</html>

@@ -2,10 +2,12 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from core.forms import *
 from django.contrib import messages
-from .models import Department, Visitor, CustomUser, Visits
+from .models import Department, Visitor, CustomUser, Visits, Branch
 from django.http import JsonResponse
 from guardian.decorators import permission_required_or_403
 from django.contrib.auth.decorators import login_required
+
+
 
 
 ######################################## ATENDETENTE ########################################
@@ -37,10 +39,10 @@ def add_visitor(request):
         form = VisitorForm(request.POST)
         if form.is_valid():
             visitor = form.save()
-            print("visitor cpf AQUI", visitor.cpf)
+            
             return redirect(f'/add-visit/?cpf={visitor.cpf}')
         else:
-            print(form.errors)
+            
             context = {'form': form}
             return render(request, 'visitor/add_visitor.html', context)
 
@@ -71,15 +73,13 @@ def get_visitors_by_cpf(request):
 #@permission_required_or_403('core.change_confirm_visits_employee')
 def get_visits_by_func(request):
     visits = Visits.objects.filter(user=request.user).values('visitor__name', 'status', 'date', 'id')
-
     return render(request, 'employee/get_visits.html', {'visits': visits})
 
 #@login_required
 #@permission_required_or_403('core.change_confirm_visits_employee')
 def confirm_visit(request):
-    print(request.GET.get('visit_id'))
     visit_id = request.GET.get('visit_id')
-    print(visit_id)
+    
     visit = Visits.objects.get(id=visit_id)
     visit.status = 'Confirmada'
     visit.save()
@@ -169,8 +169,21 @@ def loginPage(request):
 ### Preparando crud branch ###
 def list_branches(request):
     branchs = Branch.objects.all()
-    print(branchs)
     return render(request, 'admin/list_branches.html', {'branches': branchs})
+
+def update_branch(request, pk):
+    branch = Branch.objects.get(id=pk)
+    if request.method == 'POST':
+        form = BranchForm(request.POST)
+        if form.is_valid():
+            form.save(branch=pk)
+            return redirect('/list-branches')
+        else:
+            context = {'form': form}
+            return render(request, 'admin/update_branch.html', context)
+    else:
+        return render(request, 'admin/update_branch.html', {'branch': branch})
+
 
 
 
