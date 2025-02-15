@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import CustomUser, Branch, Department, Visitor, Visits
 from django.utils import timezone
 from datetime import timedelta
@@ -90,7 +90,7 @@ class CustomUserCreationForm(UserCreationForm):
     last_name = forms.CharField(max_length=30, required=True)
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'password1', 'password2', 'administrador', 'atendente', 'funcionario', 'branch', 'department', 'first_name', 'last_name']
+        fields = ['username', 'email', 'password1', 'password2', 'administrador', 'atendente', 'funcionario', 'branch', 'department', 'first_name', 'last_name', 'phone']
 
 
     def clean(self):
@@ -107,3 +107,10 @@ class CustomUserCreationForm(UserCreationForm):
             self.add_error("department", "Unidade e Setor é obrigatório para Funcionários.")
 
         return cleaned_data
+
+
+class CustomUserChangeForm(UserChangeForm):
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'email', 'administrador', 'atendente', 'funcionario', 'branch', 'department', 'first_name', 'last_name', 'phone']
+        

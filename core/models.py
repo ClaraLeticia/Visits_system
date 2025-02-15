@@ -67,6 +67,7 @@ class CustomUser(AbstractUser):
     atendente = models.BooleanField(default=False)
     funcionario = models.BooleanField(default=False)
     email = models.EmailField(unique=True)
+    phone = models.CharField(max_length=20, null=False, blank=False)
     department = models.ForeignKey('Department', on_delete=models.CASCADE, null=True, blank=True)
     branch = models.ForeignKey('Branch', on_delete=models.CASCADE, null=True, blank=True)
     status = models.CharField(max_length=10, choices=choices, default='Ativo')
