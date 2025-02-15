@@ -1,4 +1,4 @@
-{% load static %}
+
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -9,7 +9,15 @@
 </head>
 <body>
     <div class="container mt-4">
-        <h2 class="mb-4">Olá {{employee }} aqui está seu painel de Visitas</h2>
+        <h2 class="mb-4">Painel do Funcionário</h2>
+        
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Funcionário: {{ employee.first_name }} {{ employee.last_name }}</h5>
+                <p class="card-text">Unidade: {{ employee.department }}</p>
+                <p class="card-text">Email: {{ employee.email }}</p>
+            </div>
+        </div>
 
         <!-- Cards informativos -->
         <div class="row mb-4">

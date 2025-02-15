@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Visitas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+    
+        .container {
+            width: 80%;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    
+        h2 {
+            text-align: center;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+    
+        form {
+            display: grid;
+            gap: 15px;
+        }
+    
+        button,
+        a {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-sizing: border-box;
+        }
+    
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+        }
+    
+        button:hover {
+            background-color: #45a049;
+        }
+    
+        a {
+            background-color: #f44336;
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+    
+        a:hover {
+            background-color: #e53935;
+        }
+    
+        select,
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+    
+        select:focus,
+        input[type="text"]:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+    </style>
+    
+</head>
+<body>
+    <div class="container">
+        <h2>Registro de Visitas</h2>
+        <form method="post">
+            {% csrf_token %}    
+            <label for="id_department">Departamento:</label>
+            <select id="id_department" name="department" required>
+                <option value="">Selecione um departamento</option>
+            </select>
+
+            <label for="id_user">Funcionário:</label>
+            <select id="id_user" name="user" required>
+                <option value="">Selecione um funcionário</option>
+            </select>
+
+            <button type="submit">Registrar</button>
+            <a href="/atendente/">Cancelar</a>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Função para carregar os departamentos
+            function loadDepartments(){
+                let branchId = {{ user.branch_id }};
+                let departmentSelect = document.getElementById("id_department");
+                fetch(`/get-departments/?branch_id=${branchId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        departmentSelect.innerHTML = '<option value="">Selecione um departamento</option>';
+                        data.departments.forEach(department => {
+                            let option = new Option(department.name, department.id);
+                            departmentSelect.add(option);
+                        });
+                    })
+                    .catch(error => console.error("Erro ao carregar departamentos", error));
+            }
+            loadDepartments();
+
+            // Função para carregar funcionários
+            function loadFuncUser() {
+                let departmentId = document.getElementById("id_department").value;
+                let userSelect = document.getElementById("id_user");
+                fetch(`/get-func-user/?department_id=${departmentId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        userSelect.innerHTML = '<option value="">Selecione um funcionário</option>';
+                        data.users.forEach(user => {
+                            let option = new Option(user.username, user.id);
+                            userSelect.add(option);
+                        });
+                    })
+                    .catch(error => console.error("Erro ao carregar funcionários", error));
+            }
+
+            // Adiciona o evento de mudança no select de departamento
+            document.getElementById("id_department").addEventListener("change", loadFuncUser);
+        });
+    </script>
+</body>
+</html>

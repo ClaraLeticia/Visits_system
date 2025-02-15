@@ -23,4 +23,5 @@ urlpatterns = [
    path('update-department/<int:pk>', update_department, name='update_department'),
    path('list-users/', list_users, name='list_users'),
    path('update-user/<int:pk>', update_user, name='update_user'),
+   path('atendente/', attendant_dashboard, name='atendente'),
 ]

@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Atendente</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h2 class="mb-4">Painel do Atendente</h2>
+        
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Atendente: {{ attendant.first_name }} {{ attendant.last_name }}</h5>
+                <p class="card-text">Unidade: {{ attendant.branch }}</p>
+                <p class="card-text">Email: {{ attendant.email }}</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card text-bg-primary mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Total de Visitas</h5>
+                        <p class="card-text">{{ visits_count }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-bg-warning mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Visitas Agendadas</h5>
+                        <p class="card-text">{{ awaiting_count }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-bg-success mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Visitas Realizadas</h5>
+                        <p class="card-text">{{ confirmed_count }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <h3 class="mt-4">Ultimas Visitas cadastradas</h3>
+        <a href="/add-visitors/" class="btn btn-primary mb-4">Cadastrar Visita</a>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Visitante</th>
+                    <th>Status</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for visit in visits %}
+                <tr>
+                    <td>{{ visit.visitor__name }}</td>
+                    <td>{{ visit.status }}</td>
+                    <td>{{ visit.date }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    </div>
+
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -16,6 +16,24 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 ## Cadastro de visitas
 #@login_required
 #@permission_required_or_403('core.add_visits')
+def attendant_dashboard(request):
+    
+    visits = Visits.objects.filter(department__branch=request.user.branch).order_by('-date').values('visitor__name', 'status', 'date', 'id')
+    confimed_visits = visits.filter(status='Realizada').values('visitor__name', 'status', 'date')
+    awaiting_visits = visits.filter(status='Agendada').values('visitor__name', 'status', 'date')
+
+    context = {
+        'attendant': request.user, 
+        'visits': visits,
+        'awaiting_visits': awaiting_visits,
+        'confirmed_visits': confimed_visits,
+        'visits_count': visits.count(),
+        'awaiting_count': awaiting_visits.count(),
+        'confirmed_count': confimed_visits.count(),
+
+    }
+    return render(request, 'attendant/dashboard.html', context)
+
 def add_visit(request):
     if request.method == 'POST':
         cpf = request.GET.get('cpf')
@@ -25,14 +43,14 @@ def add_visit(request):
             visit = form.save(commit=False)
             visit.visitor = visitor
             visit = form.save()
-            return redirect('/get-visitors')
+            return redirect('/atendente')
         else:
             context = {'form': form}
-            return render(request, 'visits/add_visit.html', context)
+            return render(request, 'attendant/add_visit.html', context)
     else:
         form = VisitsForm()
         context = {'form': form}
-        return render(request, 'visits/add_visit.html', context)
+        return render(request, 'attendant/add_visit.html', context)
     
 # Cadastro de visitante    
 #@permission_required_or_403('core.add_visitor') # Decorator para verificar se o usuário tem permissão para adicionar visitantes
@@ -45,12 +63,12 @@ def add_visitor(request):
         else:
             
             context = {'form': form}
-            return render(request, 'visitor/add_visitor.html', context)
+            return render(request, 'attendant/add_visitor.html', context)
 
     else:
         context = VisitorForm()
         form = {'form': context}
-        return render(request, 'visitor/add_visitor.html', form)
+        return render(request, 'attendant/add_visitor.html', form)
     
  # Função para retornar a lista de visitantes
 #@login_required # Decorator para verificar se o usuário está logado
@@ -74,14 +92,14 @@ def get_visitors_by_cpf(request):
 #@permission_required_or_403('core.change_confirm_visits_employee')
 def get_visits_by_func(request):
     awaiting_visits = Visits.objects.filter(user=request.user, status='Agendada').values('visitor__name', 'status', 'date', 'id')
-    confirm_visits = Visits.objects.filter(user=request.user, status='Confirmada').values('visitor__name', 'status', 'date', 'id')
-    
+    confirm_visits = Visits.objects.filter(user=request.user, status='Realizada').values('visitor__name', 'status', 'date', 'id')
+
     context = {
-        'employee': request.user.username,
+        'employee': request.user,
         'awaiting_visits': awaiting_visits,
         'confirmed_visits': confirm_visits,
         'awaiting_count': awaiting_visits.count(),
-        'confirmed_count': confirm_visits.count()
+        'confirmed_count': confirm_visits.count(),
     }
 
 
@@ -92,7 +110,7 @@ def get_visits_by_func(request):
 def confirm_visit(request):
     visit_id = request.GET.get('visit_id')
     visit = Visits.objects.get(id=visit_id)
-    visit.status = 'Confirmada'
+    visit.status = 'Realizada'
     visit.save()
     return redirect('/func/get-visits')
     
@@ -153,30 +171,6 @@ def add_department(request):
         form = DepartmentForm()
         context = {'form': form}
         return render(request, 'admin/departments/add_department.html', context)
-
-######################################## ADMINISTRADOR ########################################
-# Função para renderizar a tela de login
-def loginPage(request):
-    if request.method == 'POST':
-        username = request.POST.get('username') # Pega o valor do campo username do formulário
-        password = request.POST.get('password') # Pega o valor do campo password do formulário
-        # O método autheticate verifica se o usuário e senha são válidos
-        user = authenticate(request, username=username, password=password) 
-        # Se o usuário for válido, o método login é chamado e o usuário é logado no sistema
-        if user is not None:
-            login(request, user)
-            return redirect('/add-visitors')
-        else:
-        # Se o usuário não for válido, uma mensagem de erro é exibida
-            messages.info(request, 'Usuário ou senha incorretos')
-            return render(request, 'registration/login.html')
-
-    else:
-        # Se o método for diferente de POST, a página de login é renderizada
-        return render(request, 'registration/login.html')
-    
-
-###################################### TESTES ###########################################
 
 ### Preparando crud branch ###
 def list_branches(request):
@@ -246,6 +240,25 @@ def update_user(request, pk):
     else:
         return render(request, 'admin/users/update_user.html', {'form': form})
     
-    def get_object(self):
-        id = self.kwargs.get('pk')
-        return get_object_or_404(CustomUser, id=id)
+######################################## USUÁRIOS ########################################
+
+# Função para renderizar a tela de login
+def loginPage(request):
+    if request.method == 'POST':
+        username = request.POST.get('username') # Pega o valor do campo username do formulário
+        password = request.POST.get('password') # Pega o valor do campo password do formulário
+        # O método autheticate verifica se o usuário e senha são válidos
+        user = authenticate(request, username=username, password=password) 
+        # Se o usuário for válido, o método login é chamado e o usuário é logado no sistema
+        if user is not None:
+            login(request, user)
+            return redirect('/add-visitors')
+        else:
+        # Se o usuário não for válido, uma mensagem de erro é exibida
+            messages.info(request, 'Usuário ou senha incorretos')
+            return render(request, 'registration/login.html')
+
+    else:
+        # Se o método for diferente de POST, a página de login é renderizada
+        return render(request, 'registration/login.html')
+    
