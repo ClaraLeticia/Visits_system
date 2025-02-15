@@ -1,41 +1,40 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Criar Unidade</title>
-    {% load static%}
-    <link rel="stylesheet" href="{% static '/css/style.css' %}">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="src/styles/styles.css">
+    <title>Criar setor</title>
 </head>
 <body>
     <main id="form_container">
         <div id="form_header">
             <h1 id="form_title">
-                Criar unidade
+                Criar Setor
             </h1>
             <button class="btn-default">
                 <i class="fa-solid fa-right-to-bracket"></i>
             </button>
         </div>
 
-        <form method="POST" id="form">
+        <form action="" id="form">
             {% csrf_token %}
             <div id="input_container">
                 <div class="input-box">
                     <label 
-                        for="name" 
+                        for="id_name" 
                         class="form-label"
                     >
-                        Nome da unidade
+                        Nome do setor
                     </label>
                     <div class="input-field">
                         <input 
                             type="text"
                             name="name"
-                            id="name"
+                            id="id_name"
                             class="form-control"
-                            placeholder="Unidade 1"
+                            placeholder="Setor 1"
                         >
                         
                     </div>
@@ -43,30 +42,26 @@
 
                 <div class="input-box">
                     <label 
-                        for="description" 
+                        for="id_description" 
                         class="form-label"
                     >
                         Descrição da unidade
                     </label>
                     <div class="input-field">
-                        <textarea 
+                        <input 
                             type="text"
                             name="description"
-                            id="description"
+                            id="id_description"
                             class="form-control"
-                            placeholder="Descrição..."
-                            rows="5" 
-                            cols="50"
+                            placeholder="Descrição do setor..."
                         >
-                        </textarea>
                     </div>
                 </div>
-
             </div>
 
             <button type="sumbit" class="btn-default">
                 <i class="fa-solid fa-check"></i>
-                Criar unidade
+                Criar conta
             </button>
         </form>
     </main>

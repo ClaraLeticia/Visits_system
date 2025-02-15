@@ -4,19 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Atualizar Unidade</title>
+    {% load static%}
+    <link rel="stylesheet" href="{% static '/css/style.css' %}">
+
 </head>
 <body>
-    <h2>Atualizar Unidade</h2>
-    <form id="branch-form" method="POST">
-        {% csrf_token %}
-        
-        <label>Nome:</label>
-        <input type="text" id="name" name="name" value="{{ branch.name }}" required>
-        
-        <label>Descrição:</label>
-        <input type="text" id="description" name="description" value="{{ branch.description }}" required>
-        
-        <button type="submit">Atualizar</button>
-    </form>
+    <main id="form_container">
+        <div id="form_header">
+            <h1 id="form_title">
+                Atualizar unidade
+            </h1>
+            <button class="btn-default">
+                <i class="fa-solid fa-right-to-bracket"></i>
+            </button>
+        </div>
+
+        <form method="POST" id="form">
+            {% csrf_token %}
+            <div id="input_container">
+                <div class="input-box">
+                    <label 
+                        for="name" 
+                        class="form-label"
+                    >
+                        Nome da unidade
+                    </label>
+                    <div class="input-field">
+                        <input 
+                            type="text"
+                            name="name"
+                            id="name"
+                            class="form-control"
+                            value="{{ branch.name }}"
+                        >
+                        
+                    </div>
+                </div>
+
+                <div class="input-box">
+                    <label 
+                        for="description" 
+                        class="form-label"
+                    >
+                        Descrição da unidade
+                    </label>
+                    <div class="input-field">
+                        <textarea 
+                            name="description"
+                            id="description"
+                            class="form-control"
+                            rows="5" 
+                            cols="50"
+                        >
+                        {{ branch.description }}
+                    </textarea>
+                    </div>
+                </div>
+
+            </div>
+
+            <button type="sumbit" class="btn-default">
+                <i class="fa-solid fa-check"></i>
+                Criar unidade
+            </button>
+        </form>
+    </main>
+
 </body>
 </html>

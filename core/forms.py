@@ -20,7 +20,6 @@ class BranchForm(forms.ModelForm):
         return branch
 
 class DepartmentForm(forms.ModelForm):
-    branch = forms.ModelChoiceField(queryset=Branch.objects.all(), empty_label="Selecione uma unidade")
     class Meta:
         model = Department
         fields = ['name', 'branch', 'description']

@@ -118,19 +118,21 @@ def confirm_visit(request):
 
 ######################################## ADMINISTRADOR ########################################
 # Função para renderizar a tela de registro
-def registerPage(request):
+def add_users(request):
+    branches = Branch.objects.all().values('id', 'name')
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             return redirect('/login')
         else:
-            context = {'form': form}
-            return render(request, 'registration/register.html', context)
+            print(form.errors)
+            context = {'form': form, 'errors': form.errors}
+            return render(request, 'admin/users/add_user.html', context)
     else:
         form = CustomUserCreationForm()
-        context = {'form': form}
-        return render(request, 'registration/register.html', context)
+        context = {'form': form, 'branches': branches}
+        return render(request, 'admin/users/add_user.html', context)
 
 # Função para retornar os setores de uma unidade em específico
 def get_departments(request):
@@ -151,6 +153,7 @@ def add_branch(request):
             form.save()
             return redirect('/add-branch')
         else:
+            print(form.errors)
             context = {'form': form}
             return render(request, 'admin/branches/add_branch.html', context)
     else:
@@ -159,17 +162,18 @@ def add_branch(request):
         return render(request, 'admin/branches/add_branch.html', context)
     
 def add_department(request):
+    branches = Branch.objects.all().values('id', 'name')
     if request.method == 'POST':
         form = DepartmentForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('/add-department')
         else:
-            context = {'form': form}
+            context = {'form': form, 'branches': branches}
             return render(request, 'admin/departments/add_department.html', context)
     else:
         form = DepartmentForm()
-        context = {'form': form}
+        context = {'form': form, 'branches': branches}
         return render(request, 'admin/departments/add_department.html', context)
 
 ### Preparando crud branch ###
@@ -214,19 +218,13 @@ def update_department(request, pk):
     
 
 ### Crud usuários ###
-class ListUsers(ListView):
-    model = CustomUser
-    template_name = 'admin/users/list_users.html'
-    context_object_name = 'users'
-    
-    def get_queryset(self):
-        return CustomUser.objects.exclude(username='AnonymousUser')
 
 def list_users(request):
     users = CustomUser.objects.exclude(username='AnonymousUser')
     return render(request, 'admin/users/list_users.html', {'users': users})
 
 def update_user(request, pk):
+    branches = Branch.objects.all().values('id', 'name')
     user = get_object_or_404(CustomUser, id=pk)
     form = CustomUserChangeForm(instance=user)
     if request.method == 'POST':
@@ -238,7 +236,7 @@ def update_user(request, pk):
             context = {'form': form}
             return render(request, 'admin/users/update_user.html', context)
     else:
-        return render(request, 'admin/users/update_user.html', {'form': form})
+        return render(request, 'admin/users/update_user.html', {'form': form, 'branches': branches})
     
 ######################################## USUÁRIOS ########################################
 

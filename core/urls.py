@@ -1,12 +1,13 @@
 from django.contrib import admin
 from django.urls import path
 from core.views import *
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 
 #Urls do aplicativo core
 urlpatterns = [
    path('', loginPage, name='login'),
-   path('register/', registerPage, name='register'),
+   path('add-users/', add_users, name='add-users'),
    path('login/', loginPage, name='login'),
    path('get-departments/', get_departments, name='get_departments'),
    path('get-visitors/', get_visitors_by_cpf, name='get_visitors'),
@@ -25,3 +26,5 @@ urlpatterns = [
    path('update-user/<int:pk>', update_user, name='update_user'),
    path('atendente/', attendant_dashboard, name='atendente'),
 ]
+
+urlpatterns += staticfiles_urlpatterns()

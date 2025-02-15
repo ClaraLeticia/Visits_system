@@ -1,50 +1,156 @@
-<h2>Registro de Usuário</h2>
-<form method="post" id="registrationForm">
-    {% csrf_token %}
-    {{ form.as_p }}
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{% static '/css/style.css' %}">
+    <title>Atualizar usuário</title>
+</head>
+<body>
+    <main id="form_container">
+        <div id="form_header">
+            <h1 id="form_title">Atualizar usuário</h1>
+            <button class="btn-default">
+                <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+        </div>
 
-    <button type="submit">Registrar</button>
-</form>
+        <form method="POST" id="form">
+            {% csrf_token %}
+            <div id="input_container">
+                <div class="input-box">
+                    <label for="username" class="form-label">Nome de Usuário</label>
+                    <div class="input-field">
+                        <input type="text" name="username" id="username" class="form-control" placeholder="Fulano" value="{{ form.username.value }}">
+                    </div>
+                </div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        function toggleFields() {
-            let atendente = document.getElementById("id_atendente").checked;
-            let funcionario = document.getElementById("id_funcionario").checked;
-            let branchField = document.getElementById("id_branch").parentElement;
-            let departmentField = document.getElementById("id_department").parentElement;
+                <div class="input-box">
+                    <label for="first_name" class="form-label">Primeiro nome</label>
+                    <div class="input-field">
+                        <input type="text" name="first_name" id="first_name" class="form-control" placeholder="Fulano" value="{{ form.first_name.value }}">
+                    </div>
+                </div>
 
-            if (funcionario) {
-                branchField.style.display = "block";
-                departmentField.style.display = "block";
-            } else if (atendente) {
-                branchField.style.display = "block";
-                departmentField.style.display = "none";
-            } else {
-                branchField.style.display = "none";
-                departmentField.style.display = "none";
+                <div class="input-box">
+                    <label for="last_name" class="form-label">Último nome</label>
+                    <div class="input-field">
+                        <input type="text" name="last_name" id="last_name" class="form-control" placeholder="De Tal" value="{{ form.last_name.value }}">
+                    </div>
+                </div>
+
+                <div class="input-box">
+                    <label for="email" class="form-label">E-mail</label>
+                    <div class="input-field">
+                        <input type="email" name="email" id="email" class="form-control" placeholder="exemplo@gmail.com" value="{{ form.email.value }}">
+                    </div>
+                </div>
+
+                <div class="input-box">
+                    <label for="phone" class="form-label">Telefone</label>
+                    <div class="input-field">
+                        <input type="tel" name="phone" id="phone" class="form-control" placeholder="(XX) XXXX-XXXX" value="{{ form.phone.value }}">
+                    </div>
+                </div>
+
+                <div class="input-box">
+                    <label for="password" class="form-label">Senha (deixe em branco para manter a atual)</label>
+                    <div class="input-field">
+                        <input type="password" name="password" id="password" class="form-control" placeholder="*******">
+                    </div>
+                </div>
+
+                <div class="radio-container">
+                    <label class="form-label">Função</label>
+
+                    <div id="gender_inputs">
+                        <div class="checkbox-box">
+                            <input type="checkbox" name="administrador" id="id_administrador" class="form-control" {% if form.administrador.value %}checked{% endif %}>
+                            <label for="id_administrador" class="form-label">Administrador</label>
+                        </div>
+
+                        <div class="checkbox-box">
+                            <input type="checkbox" name="atendente" id="id_atendente" class="form-control" {% if form.atendente.value %}checked{% endif %}>
+                            <label for="id_atendente" class="form-label">Atendente</label>
+                        </div>
+
+                        <div class="checkbox-box">
+                            <input type="checkbox" name="funcionario" id="id_funcionario" class="form-control" {% if form.funcionario.value %}checked{% endif %}>
+                            <label for="id_funcionario" class="form-label">Funcionário</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="branch_field" style="display:none;">
+                    <label for="id_branch" class="form-label">Unidade</label>
+                    <select id="id_branch" name="branch">
+                        <option value="">Selecione a Unidade</option>
+                        {% for branch in branches %}
+                            <option value="{{ branch.id }}" {% if branch.id == form.branch.value %}selected{% endif %}>{{ branch.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div id="department_field" style="display:none;">
+                    <label for="id_department" class="form-label">Setor</label>
+                    <select id="id_department" name="department">
+                        <option value="">Selecione o Setor</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-default">
+                <i class="fa-solid fa-check"></i>
+                Atualizar conta
+            </button>
+        </form>
+
+        {{ form.errors }}
+    </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            function toggleFields() {
+                let atendente = document.getElementById("id_atendente").checked;
+                let funcionario = document.getElementById("id_funcionario").checked;
+                let branchField = document.getElementById("branch_field");
+                let departmentField = document.getElementById("department_field");
+
+                if (funcionario) {
+                    branchField.style.display = "block";
+                    departmentField.style.display = "block";
+                } else if (atendente) {
+                    branchField.style.display = "block";
+                    departmentField.style.display = "none";
+                } else {
+                    branchField.style.display = "none";
+                    departmentField.style.display = "none";
+                }
             }
-        }
 
-        function loadDepartments() {
-            let branchId = document.getElementById("id_branch").value;
-            let departmentSelect = document.getElementById("id_department");
+            function loadDepartments() {
+                let branchId = document.getElementById("id_branch").value;
+                let departmentSelect = document.getElementById("id_department");
+                fetch(`/get-departments/?branch_id=${branchId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        departmentSelect.innerHTML = '<option value="">Selecione um setor</option>';
+                        data.departments.forEach(department => {
+                            let option = new Option(department.name, department.id);
+                            departmentSelect.add(option);
+                        });
+                    })
+                    .catch(error => console.error("Erro ao carregar setores:", error));
+            }
 
-            fetch(`/get-departments/?branch_id=${branchId}`)
-                .then(response => response.json())
-                .then(data => {
-                    departmentSelect.innerHTML = '<option value="">Selecione um setor</option>';
-                    data.departments.forEach(department => {
-                        let option = new Option(department.name, department.id);
-                        departmentSelect.add(option);
-                    });
-                })
-                .catch(error => console.error("Erro ao carregar setores:", error));
-        }
+            document.getElementById("id_atendente").addEventListener("change", toggleFields);
+            document.getElementById("id_funcionario").addEventListener("change", toggleFields);
+            document.getElementById("id_branch").addEventListener("change", loadDepartments);
+            toggleFields();
+        });
+    </script>
 
-        document.getElementById("id_atendente").addEventListener("change", toggleFields);
-        document.getElementById("id_funcionario").addEventListener("change", toggleFields);
-        document.getElementById("id_branch").addEventListener("change", loadDepartments);
-        toggleFields();
-    });
-</script>
+</body>
+</html>
