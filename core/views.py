@@ -6,6 +6,8 @@ from .models import Department, Visitor, CustomUser, Visits, Branch
 from django.http import JsonResponse
 from guardian.decorators import permission_required_or_403
 from django.contrib.auth.decorators import login_required
+from django.views.generic import TemplateView,ListView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 
 
@@ -39,7 +41,6 @@ def add_visitor(request):
         form = VisitorForm(request.POST)
         if form.is_valid():
             visitor = form.save()
-            
             return redirect(f'/add-visit/?cpf={visitor.cpf}')
         else:
             
@@ -72,18 +73,29 @@ def get_visitors_by_cpf(request):
 #@login_required
 #@permission_required_or_403('core.change_confirm_visits_employee')
 def get_visits_by_func(request):
-    visits = Visits.objects.filter(user=request.user).values('visitor__name', 'status', 'date', 'id')
-    return render(request, 'employee/get_visits.html', {'visits': visits})
+    awaiting_visits = Visits.objects.filter(user=request.user, status='Agendada').values('visitor__name', 'status', 'date', 'id')
+    confirm_visits = Visits.objects.filter(user=request.user, status='Confirmada').values('visitor__name', 'status', 'date', 'id')
+    
+    context = {
+        'employee': request.user.username,
+        'awaiting_visits': awaiting_visits,
+        'confirmed_visits': confirm_visits,
+        'awaiting_count': awaiting_visits.count(),
+        'confirmed_count': confirm_visits.count()
+    }
+
+
+    return render(request, 'employee/get_visits.html', context)
 
 #@login_required
 #@permission_required_or_403('core.change_confirm_visits_employee')
 def confirm_visit(request):
     visit_id = request.GET.get('visit_id')
-    
     visit = Visits.objects.get(id=visit_id)
     visit.status = 'Confirmada'
     visit.save()
-    return JsonResponse({'success': 'Visita confirmada com sucesso'})
+    return redirect('/func/get-visits')
+    
     
 
 ######################################## ADMINISTRADOR ########################################
@@ -207,7 +219,33 @@ def update_department(request, pk):
         return render(request, 'admin/departments/update_department.html', {'department': department,'branches': branches})
     
 
-
-
-
+### Crud usuários ###
+class ListUsers(ListView):
+    model = CustomUser
+    template_name = 'admin/users/list_users.html'
+    context_object_name = 'users'
     
+    def get_queryset(self):
+        return CustomUser.objects.exclude(username='AnonymousUser')
+
+def list_users(request):
+    users = CustomUser.objects.exclude(username='AnonymousUser')
+    return render(request, 'admin/users/list_users.html', {'users': users})
+
+def update_user(request, pk):
+    user = get_object_or_404(CustomUser, id=pk)
+    form = CustomUserChangeForm(instance=user)
+    if request.method == 'POST':
+        form = CustomUserChangeForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('/list-users')
+        else:
+            context = {'form': form}
+            return render(request, 'admin/users/update_user.html', context)
+    else:
+        return render(request, 'admin/users/update_user.html', {'form': form})
+    
+    def get_object(self):
+        id = self.kwargs.get('pk')
+        return get_object_or_404(CustomUser, id=id)

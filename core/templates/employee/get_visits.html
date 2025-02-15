@@ -1,39 +1,91 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Usuários</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Visitas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
-    <div class="container mt-5">
-        <h2 class="mb-4">Lista de Usuários</h2>
-        <table class="table table-striped">
-            <thead class="table-dark">
-                <tr>
-                    <th>Nome</th>
-                    <th>Situação</th>
-                    <td>{{ visit.status }}</td>
-                </tr>
-            </thead>
-            <tbody>
-                {% for visit in visits %}
-                <tr>
-                    <td>{{ visit.visitor__name }}</td>
-                    <td>{{ visit.status }}</td>
-                    <td>
-                       <a href='/confirm-visit/?visit_id={{ visit.id }}'>Confirmar</a>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="5" class="text-center">Nenhum usuário encontrado.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <a href="\add-visitors" class="btn btn-success">Adicionar Usuário</a>
+    <div class="container mt-4">
+        <h2 class="mb-4">Olá {{employee }} aqui está seu painel de Visitas</h2>
+
+        <!-- Cards informativos -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card text-white bg-warning">
+                    <div class="card-body">
+                        <h5 class="card-title">Visitas Aguardando</h5>
+                        <p class="card-text display-4">{{ awaiting_count }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card text-white bg-success">
+                    <div class="card-body">
+                        <h5 class="card-title">Visitas Realizadas</h5>
+                        <p class="card-text display-4">{{ confirmed_count }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabela de Visitas Aguardando -->
+        <h4>Visitas Aguardando</h4>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead class="table-warning">
+                    <tr>
+                        <th>Visitante</th>
+                        <th>Data</th>
+                        <th>Confirmar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for visit in awaiting_visits %}
+                        <tr>
+                            <td>{{ visit.visitor__name }}</td>
+                            <td>{{ visit.date|date:"d/m/Y H:i" }}</td>
+                            <td>
+                                <a href='/confirm-visit/?visit_id={{ visit.id }}' class="btn btn-success">Confirmar</a>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">Nenhuma visita aguardando.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Tabela de Visitas Confirmadas -->
+        <h4>Visitas Realizadas</h4>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead class="table-success">
+                    <tr>
+                        <th>Visitante</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for visit in confirmed_visits %}
+                        <tr>
+                            <td>{{ visit.visitor__name }}</td>
+                            <td>{{ visit.date|date:"d/m/Y" }}</td>
+                            
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">Nenhuma visita confirmada.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
