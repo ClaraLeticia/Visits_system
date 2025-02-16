@@ -16,7 +16,7 @@ class BranchForm(forms.ModelForm):
                 'name': self.cleaned_data['name'],
                 'description': self.cleaned_data['description']
             }
-        )
+        )[0]
         return branch
 
 class DepartmentForm(forms.ModelForm):
@@ -51,7 +51,7 @@ class VisitsForm(forms.ModelForm):
         return visit
 
 
-class VisitorForm(forms.Form):
+class VisitorForm(forms.ModelForm):
     name = forms.CharField(max_length=100)
     cpf = forms.CharField(max_length=11)
     rg = forms.CharField(max_length=9)
@@ -62,17 +62,6 @@ class VisitorForm(forms.Form):
         model = Visitor
         fields = ['name', 'cpf', 'rg', 'phone', 'photo']
 
-    def save(self, commit=True):
-        visitor, created = Visitor.objects.update_or_create(
-            cpf=self.cleaned_data['cpf'],
-            defaults={
-                'photo': self.cleaned_data['photo'],
-                'name': self.cleaned_data['name'],
-                'rg': self.cleaned_data['rg'],
-                'phone': self.cleaned_data['phone']
-            }
-        )
-        return visitor
 
     
 

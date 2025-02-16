@@ -169,3 +169,8 @@ input:-webkit-autofill {
         background-color: #fff;
     }
 }
+
+.card{
+    background-color: #CF9AF7; 
+    border: 1px solid #ddd;
+}

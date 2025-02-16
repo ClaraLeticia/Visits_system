@@ -87,8 +87,6 @@ class CustomUser(AbstractUser):
     
 @receiver(post_save, sender=CustomUser)
 def assign_user_permissions(sender, instance, created, **kwargs):
-    print('Entrou no signal')
-    print(instance.atendente)
     if created:
         if instance.administrador:
             group, _ = Group.objects.get_or_create(name="Administradores")
