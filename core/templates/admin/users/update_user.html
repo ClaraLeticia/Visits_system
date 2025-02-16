@@ -105,6 +105,8 @@
                 <i class="fa-solid fa-check"></i>
                 Atualizar conta
             </button>
+            <a href="/administrador/" class="btn-default" >Cancelar</a>
+
         </form>
 
         {{ form.errors }}
@@ -130,25 +132,35 @@
                 }
             }
 
-            function loadDepartments() {
-                let branchId = document.getElementById("id_branch").value;
+            async function fetchDepartments() {
+                const branchId = document.getElementById("id_branch").value;
                 let departmentSelect = document.getElementById("id_department");
-                fetch(`/get-departments/?branch_id=${branchId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        departmentSelect.innerHTML = '<option value="">Selecione um setor</option>';
+                const response = await fetch(`/get-departments/?branch_id=${branchId}`)
+                if (response.ok) {
+                    const data = await response.json();
+                    if (!data.error){
+                        departmentSelect.innerHTML = '<option value="">Selecione o Setor</option>';
                         data.departments.forEach(department => {
-                            let option = new Option(department.name, department.id);
-                            departmentSelect.add(option);
+                            if (department.id == {{ form.department.value }}) {
+                                departmentSelect.innerHTML += `<option value="${department.id}" selected>${department.name}</option>`;
+                            } else {
+                                departmentSelect.innerHTML += `<option value="${department.id}">${department.name}</option>`;
+                            }
                         });
-                    })
-                    .catch(error => console.error("Erro ao carregar setores:", error));
-            }
+                    } else {
+                        console.error("Erro ao carregar setores:", data.error);
+                    }
+                } else {
+                    console.error("Erro ao carregar setores:", response.statusText);
+                }
+            }	
 
             document.getElementById("id_atendente").addEventListener("change", toggleFields);
             document.getElementById("id_funcionario").addEventListener("change", toggleFields);
-            document.getElementById("id_branch").addEventListener("change", loadDepartments);
+            document.getElementById("id_branch").addEventListener("change", fetchDepartments);
             toggleFields();
+            fetchDepartments();
+
         });
     </script>
 

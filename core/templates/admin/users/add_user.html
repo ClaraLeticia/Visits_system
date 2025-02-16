@@ -11,7 +11,7 @@
 <body>
     <main id="form_container">
         <div id="form_header">
-            <h1 id="form_title">Criar usuário</h1>
+            <h1 id="form_title">Login</h1>
             <button class="btn-default">
                 <i class="fa-solid fa-right-to-bracket"></i>
             </button>
@@ -51,7 +51,7 @@
                 <div class="input-box">
                     <label for="phone" class="form-label">Telefone</label>
                     <div class="input-field">
-                        <input type="tel" name="phone" id="phone" class="form-control" placeholder="(XX) XXXX-XXXX">
+                        <input type="tel" name="phone" id="phone" class="form-control" placeholder="XXXXXXXXXX">
                     </div>
                 </div>
 
@@ -91,7 +91,7 @@
                         </div>
                     </div>
                 </div>
-                <div id="branch_field" style="display:none;">
+                <div id="branch_field" class="display:none;">
                     <label for="id_branch" class="form-label">Unidade</label>
                     <select id="id_branch" name="branch">
                         <option value="">Selecione a Unidade</option>
@@ -103,7 +103,7 @@
 
     
 
-                <div id="department_field" style="display:none;">
+                <div id="department_field" class="display:none;">
                     <label for="id_department" class="form-label">Setor</label>
                     <select id="id_department" name="department">
                         <option value="">Selecione o Setor</option>
@@ -115,6 +115,8 @@
                 <i class="fa-solid fa-check"></i>
                 Criar conta
             </button>
+
+            <a href="/administrador/" class="btn-default" >Cancelar</a>
         </form>
 
         {{ form.errors }}
@@ -140,25 +142,31 @@
                 }
             }
 
-            function loadDepartments() {
-                let branchId = document.getElementById("id_branch").value;
+            async function fetchDepartments() {
+                const branchId = document.getElementById("id_branch").value;
                 let departmentSelect = document.getElementById("id_department");
-                fetch(`/get-departments/?branch_id=${branchId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        departmentSelect.innerHTML = '<option value="">Selecione um setor</option>';
+                const response = await fetch(`/get-departments/?branch_id=${branchId}`)
+                if (response.ok) {
+                    const data = await response.json();
+                    if (!data.error){
+                        departmentSelect.innerHTML = '<option value="">Selecione o Setor</option>';
                         data.departments.forEach(department => {
                             let option = new Option(department.name, department.id);
                             departmentSelect.add(option);
                         });
-                    })
-                    .catch(error => console.error("Erro ao carregar setores:", error));
-            }
+                    } else {
+                        console.error("Erro ao carregar setores:", data.error);
+                    }
+                } else {
+                    console.error("Erro ao carregar setores:", response.statusText);
+                }
+            }	
 
             document.getElementById("id_atendente").addEventListener("change", toggleFields);
             document.getElementById("id_funcionario").addEventListener("change", toggleFields);
-            document.getElementById("id_branch").addEventListener("change", loadDepartments);
+            document.getElementById("id_branch").addEventListener("change", fetchDepartments);
             toggleFields();
+
         });
     </script>
 

@@ -29,6 +29,7 @@ urlpatterns = [
    path('update-user/<int:pk>', update_user, name='update_user'),
    path('atendente/', attendant_dashboard, name='atendente'),
    path('administrador/', admin_dashboard, name='admin'),
+   path('logout/', logoutView, name='logout'),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

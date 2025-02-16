@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -5,13 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel do Administrador</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>  <!-- Incluindo o Chart.js -->
+    <link rel="stylesheet" href="{% static '/css/style.css' %}">
+
 </head>
 <body class="bg-gray-100">
+   
     <div class="container mx-auto py-6">
 
-        <div class="card mb-3">
-            <h1 class="text-3xl font-bold mb-6">Painel do Administrador</h1>
+        <div class="bg-purple-300 mb-3 p-6 rounded-lg shadow-md">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-3xl font-bold mb-6">Painel do Administrador</h2>
+                <a href="/logout" class="btn-default">
+                    <span class="glyphicon glyphicon-log-out"></span> Log out
+                </a>
+            </div>
             <div class="bg-white p-6 rounded-lg shadow-md">
                 <h5 class="card-title ">Administrador: {{ admin.first_name }} {{ admin.last_name }}</h5>
                 <p class="card-text">Email: {{ admin.email }}</p>
@@ -21,29 +31,29 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- Card de Visitas -->
             <div class="bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-xl font-semibold mb-4">Visitas Totais</h3>
-                <p class="text-3xl font-bold">{{ visits }}</p>
+                <h3 class="text-3xl font-semibold mb-4">Visitas Totais</h3>
+                <p class="text-2xl font-bold">{{ visits }}</p>
             </div>
             <!-- Card de Visitas Aguardando -->
             <div class="bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-xl font-semibold mb-4">Visitas Aguardando</h3>
-                <p class="text-3xl font-bold">{{ awaiting_visits }}</p>
+                <h3 class="text-3xl font-semibold mb-4">Visitas Aguardando</h3>
+                <p class="text-2xl font-bold">{{ awaiting_visits }}</p>
             </div>
             <!-- Card de Visitas Confirmadas -->
             <div class="bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-xl font-semibold mb-4">Visitas Confirmadas</h3>
-                <p class="text-3xl font-bold">{{ confirmed_visits }}</p>
+                <h3 class="text-3xl font-semibold mb-4">Visitas Confirmadas</h3>
+                <p class="text-2xl font-bold">{{ confirmed_visits }}</p>
             </div>
         </div>
 
         <!-- Gráfico de Visitas por Unidade -->
         <div class="bg-white p-6 mt-6 rounded-lg shadow-md flex justify-between ">
             <div class="w-1/3 p-2">
-            <h3 class="text-xl font-semibold mb-4">Visitas por Unidade</h3>
+            <h3 class="text-3xl font-semibold mb-4">Visitas por Unidade</h3>
             <canvas id="visitsChart"></canvas> <!-- Ajustando o tamanho do gráfico -->
             </div>
             <div class="w-1/3 p-2">
-            <h3 class="text-xl font-semibold mb-4">Visitas por Setor</h3>
+            <h3 class="text-3xl font-semibold mb-4">Visitas por Setor</h3>
             <canvas id="visitsDpChart"></canvas> <!-- Ajustando o tamanho do gráfico -->
             </div>
         </div>
@@ -52,7 +62,10 @@
 
         <!-- Tabelas de Departamentos e Unidades -->
         <div class="bg-white p-6 mt-6 rounded-lg shadow-md">
-            <h3 class="text-xl font-semibold mb-4">Departamentos</h3>
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-4xl font-semibold">Departamentos</h3>
+                <a href="/add-department" class="btn-default">Adicionar Departamento</a>
+            </div>
             <table class="min-w-full table-auto">
                 <thead>
                     <tr>
@@ -74,7 +87,10 @@
         </div>
 
         <div class="bg-white p-6 mt-6 rounded-lg shadow-md">
-            <h3 class="text-xl font-semibold mb-4">Unidades</h3>
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-4xl font-semibold mb-4">Unidades</h3>
+                <a href="/add-department/" class="btn btn-default mb-4">Cadastrar Unidade</a>
+            </div>
             <table class="min-w-full table-auto">
                 <thead>
                     <tr>
@@ -94,7 +110,10 @@
         </div>
 
         <div class="bg-white p-6 mt-6 rounded-lg shadow-md">
-            <h3 class="text-xl font-semibold mb-4">Usuários</h3>
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-4xl font-semibold mb-4">Usuário</h3>
+                <a href="/add-users/" class="btn btn-default mb-4">Cadastrar Usuário</a>
+            </div>
             <table class="min-w-full table-auto">
                 <thead>
                     <tr>

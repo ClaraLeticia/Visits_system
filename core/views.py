@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from core.forms import *
 from django.contrib import messages
 from .models import Department, Visitor, CustomUser, Visits, Branch
@@ -13,8 +13,8 @@ from django.db.models import Count
 
 ######################################## ATENDETENTE ########################################
 ## Cadastro de visitas
-@login_required
-@permission_required_or_403('core.attendant_permission')
+#@login_required
+#@permission_required_or_403('core.attendant_permission')
 def attendant_dashboard(request):
     
     visits = Visits.objects.filter(department__branch=request.user.branch).order_by('-date').values('visitor__name', 'status', 'date', 'id')
@@ -55,7 +55,6 @@ def add_visit(request):
 #@login_required
 #@permission_required_or_403('core.attendant_permission')
 def add_visitor(request):
-    
     if request.method == 'POST':
         cpf = request.POST.get('cpf')
         name = request.POST.get('name')
@@ -94,8 +93,8 @@ def get_visitors_by_cpf(request):
         return JsonResponse({'error': 'Visitante não encontrado'})
 
 ######################################## Funcionario ########################################
-@login_required
-@permission_required_or_403('core.employee_permission')
+#@login_required
+#@permission_required_or_403('core.employee_permission')
 def get_visits_by_func(request):
     awaiting_visits = Visits.objects.filter(user=request.user, status='Agendada').values('visitor__name', 'status', 'date', 'id', 'visitor__photo')
    
@@ -112,8 +111,8 @@ def get_visits_by_func(request):
 
     return render(request, 'employee/dashboard.html', context)
 
-@login_required
-@permission_required_or_403('core.employee_permission')
+#@login_required
+#@permission_required_or_403('core.employee_permission')
 def confirm_visit(request):
     visit_id = request.GET.get('visit_id')
     visit = Visits.objects.get(id=visit_id)
@@ -256,8 +255,8 @@ def update_user(request, pk):
     else:
         return render(request, 'admin/users/update_user.html', {'form': form, 'branches': branches})
     
-#@login_required
-#@permission_required_or_403('core.admin_permission')
+@login_required
+@permission_required_or_403('core.admin_permission')
 def admin_dashboard(request):
     visits = Visits.objects.all().values_list('department__branch__name', 'id')
     visits_dict = dict(visits)
@@ -311,3 +310,6 @@ def loginPage(request):
         # Se o método for diferente de POST, a página de login é renderizada
         return render(request, 'registration/login.html')
     
+def logoutView(request):
+    logout(request)
+    return redirect('/login')
