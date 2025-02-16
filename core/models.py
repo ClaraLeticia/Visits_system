@@ -5,6 +5,9 @@ from django.dispatch import receiver
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from guardian.shortcuts import assign_perm, assign, remove_perm
+from imagekit.models import ImageSpecField
+from imagekit.processors import ResizeToFill
+
 # Create your models here.
 
 class Visitor(models.Model):
@@ -12,13 +15,11 @@ class Visitor(models.Model):
     rg = models.CharField(max_length=9, unique=True)
     name = models.CharField(max_length=100)
     phone = models.CharField(max_length=20)
-    '''
-    img = models.ImageField(upload_to='visitors', null=False, blank=False)
-    img_thumbnail = ImageSpecField(source='img',
-                                   processors=[ResizeToFill(100, 50)],
-                                   format='JPEG',
-                                   options={'quality': 60})
-    '''
+    photo = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
+    profile_picture = ImageSpecField(source='photo',
+                                      processors=[ResizeToFill(100, 50)],
+                                      format='JPEG',
+                                      options={'quality': 60})
 
 
     def __str__(self):
@@ -71,6 +72,8 @@ class CustomUser(AbstractUser):
     department = models.ForeignKey('Department', on_delete=models.CASCADE, null=True, blank=True)
     branch = models.ForeignKey('Branch', on_delete=models.CASCADE, null=True, blank=True)
     status = models.CharField(max_length=10, choices=choices, default='Ativo')
+
+
 
     objects = CustomUserManager()
     

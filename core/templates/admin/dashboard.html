@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Administrador</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>  <!-- Incluindo o Chart.js -->
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto py-6">
+
+        <div class="card mb-3">
+            <h1 class="text-3xl font-bold mb-6">Painel do Administrador</h1>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h5 class="card-title ">Administrador: {{ admin.first_name }} {{ admin.last_name }}</h5>
+                <p class="card-text">Email: {{ admin.email }}</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Card de Visitas -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-semibold mb-4">Visitas Totais</h3>
+                <p class="text-3xl font-bold">{{ visits }}</p>
+            </div>
+            <!-- Card de Visitas Aguardando -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-semibold mb-4">Visitas Aguardando</h3>
+                <p class="text-3xl font-bold">{{ awaiting_visits }}</p>
+            </div>
+            <!-- Card de Visitas Confirmadas -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-semibold mb-4">Visitas Confirmadas</h3>
+                <p class="text-3xl font-bold">{{ confirmed_visits }}</p>
+            </div>
+        </div>
+
+        <!-- Gráfico de Visitas por Unidade -->
+        <div class="bg-white p-6 mt-6 rounded-lg shadow-md flex justify-between ">
+            <div class="w-1/3 p-2">
+            <h3 class="text-xl font-semibold mb-4">Visitas por Unidade</h3>
+            <canvas id="visitsChart"></canvas> <!-- Ajustando o tamanho do gráfico -->
+            </div>
+            <div class="w-1/3 p-2">
+            <h3 class="text-xl font-semibold mb-4">Visitas por Setor</h3>
+            <canvas id="visitsDpChart"></canvas> <!-- Ajustando o tamanho do gráfico -->
+            </div>
+        </div>
+        
+
+
+        <!-- Tabelas de Departamentos e Unidades -->
+        <div class="bg-white p-6 mt-6 rounded-lg shadow-md">
+            <h3 class="text-xl font-semibold mb-4">Departamentos</h3>
+            <table class="min-w-full table-auto">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2">Nome</th>
+                        <th class="px-4 py-2">Descrição</th>
+                        <th class="px-4 py-2">Unidade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for department in departments %}
+                    <tr>
+                        <td class="border px-4 py-2"><a href="/update-department/{{ department.id }}">{{ department.name }}</a></td>
+                        <td class="border px-4 py-2">{{ department.description }}</td>
+                        <td class="border px-4 py-2">{{ department.branch__name}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="bg-white p-6 mt-6 rounded-lg shadow-md">
+            <h3 class="text-xl font-semibold mb-4">Unidades</h3>
+            <table class="min-w-full table-auto">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2">Nome</th>
+                        <th class="px-4 py-2">Descrição</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for branch in branches %}
+                    <tr>
+                        <td class="border px-4 py-2"><a href="/update-branch/{{branch.id}}">{{ branch.name }} </a></td>
+                        <td class="border px-4 py-2">{{ branch.description }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="bg-white p-6 mt-6 rounded-lg shadow-md">
+            <h3 class="text-xl font-semibold mb-4">Usuários</h3>
+            <table class="min-w-full table-auto">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2">Nome</th>
+                        <th class="px-4 py-2">Telefone</th>
+                        <th class="px-4 py-2">Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td class="border px-4 py-2"><a href="/update-user/{{user.id}}">{{ user.first_name }} {{ user.last_name}} </a></td>
+                        <td class="border px-4 py-2">{{ user.phone }}</td>
+                        <td class="border px-4 py-2">{{ user.email }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const visitsKey = {{ visits_key | safe }};
+        const visitsValue = {{ visits_values | safe }};
+        const ctx = document.getElementById('visitsChart').getContext('2d');
+
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: visitsKey,  // Cidades (Assu, Mossoró, etc.)
+                datasets: [{
+                    label: 'Número de Visitas',
+                    data: visitsValue,  // Quantidade de visitas por cidade
+                    backgroundColor: ['#4f46e5', '#333'], // Cores variadas
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        const visitsDpKey = {{ visits_dp_key | safe }};
+        const visitsDpValue = {{ visits_dp_values | safe }};
+        const ctxDp = document.getElementById('visitsDpChart').getContext('2d');
+
+        new Chart(ctxDp, {
+            type: 'bar',
+            data: {
+                labels: visitsDpKey,  // Cidades (Assu, Mossoró, etc.)
+                datasets: [{
+                    label: 'Número de Visitas',
+                    data: visitsDpValue,  // Quantidade de visitas por cidade
+                    backgroundColor: ['#4f46e5', '#333'], // Cores variadas
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

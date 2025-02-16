@@ -37,10 +37,6 @@ class DepartmentForm(forms.ModelForm):
 
 
 class VisitsForm(forms.ModelForm):
-    '''
-    department = forms.ModelChoiceField(queryset=Department.objects.all(), empty_label="Selecione um setor")
-    user = forms.ModelChoiceField(queryset=CustomUser.objects.all(), empty_label="Selecione um funcionário", required=False)
-    '''
 
     class Meta:
         model = Visits
@@ -60,15 +56,17 @@ class VisitorForm(forms.Form):
     cpf = forms.CharField(max_length=11)
     rg = forms.CharField(max_length=9)
     phone = forms.CharField(max_length=20)
+    photo = forms.ImageField()
 
     class Meta:
         model = Visitor
-        fields = ['name', 'cpf', 'rg', 'phone']
+        fields = ['name', 'cpf', 'rg', 'phone', 'photo']
 
     def save(self, commit=True):
         visitor, created = Visitor.objects.update_or_create(
             cpf=self.cleaned_data['cpf'],
             defaults={
+                'photo': self.cleaned_data['photo'],
                 'name': self.cleaned_data['name'],
                 'rg': self.cleaned_data['rg'],
                 'phone': self.cleaned_data['phone']

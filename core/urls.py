@@ -2,6 +2,9 @@ from django.contrib import admin
 from django.urls import path
 from core.views import *
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 
 #Urls do aplicativo core
@@ -14,7 +17,7 @@ urlpatterns = [
    path('add-visitors/', add_visitor, name='add_visitor'),
    path('add-visit/', add_visit, name='add_visit'),
    path('get-func-user/', get_func_user, name='get_func_user' ),
-   path('func/get-visits/', get_visits_by_func, name='get_visits_by_func'),
+   path('funcionario/', get_visits_by_func, name='get_visits_by_func'),
    path('confirm-visit/', confirm_visit, name='confirm_visit'),
    path('add-branch/', add_branch, name='add_branch'),
    path('add-department/', add_department, name='add_department'),
@@ -25,6 +28,10 @@ urlpatterns = [
    path('list-users/', list_users, name='list_users'),
    path('update-user/<int:pk>', update_user, name='update_user'),
    path('atendente/', attendant_dashboard, name='atendente'),
+   path('administrador/', admin_dashboard, name='admin'),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

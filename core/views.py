@@ -6,8 +6,7 @@ from .models import Department, Visitor, CustomUser, Visits, Branch
 from django.http import JsonResponse
 from guardian.decorators import permission_required_or_403
 from django.contrib.auth.decorators import login_required
-from django.views.generic import TemplateView,ListView
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.db.models import Count
 
 
 
@@ -55,20 +54,28 @@ def add_visit(request):
 # Cadastro de visitante    
 #@permission_required_or_403('core.add_visitor') # Decorator para verificar se o usuário tem permissão para adicionar visitantes
 def add_visitor(request):
+    
     if request.method == 'POST':
-        form = VisitorForm(request.POST)
+        print("post")
+        form = VisitorForm(request.POST, request.FILES)
         if form.is_valid():
+            cpf = form.cleaned_data.get('cpf')
+            if Visitor.objects.filter(cpf=cpf).exists():
+                form.add_error('cpf', 'Visitante já registrado com este CPF.')
+                context = {'form': form}
+                return render(request, 'attendant/add_visitor.html', context)
+            
             visitor = form.save()
             return redirect(f'/add-visit/?cpf={visitor.cpf}')
         else:
-            
             context = {'form': form}
+            print(form.errors)
             return render(request, 'attendant/add_visitor.html', context)
-
     else:
-        context = VisitorForm()
-        form = {'form': context}
-        return render(request, 'attendant/add_visitor.html', form)
+        form = VisitorForm()
+        context = {'form': form}
+        return render(request, 'attendant/add_visitor.html', context)
+
     
  # Função para retornar a lista de visitantes
 #@login_required # Decorator para verificar se o usuário está logado
@@ -81,8 +88,8 @@ def get_visitors_by_cpf(request):
         return JsonResponse({
             'name': visitor.name,
             'rg': visitor.rg,
-            'phone': visitor.phone
-            
+            'phone': visitor.phone,
+            'photo': visitor.photo.url if visitor.photo else None       
         })
     else:
         return JsonResponse({'error': 'Visitante não encontrado'})
@@ -103,7 +110,7 @@ def get_visits_by_func(request):
     }
 
 
-    return render(request, 'employee/get_visits.html', context)
+    return render(request, 'employee/dashboard.html', context)
 
 #@login_required
 #@permission_required_or_403('core.change_confirm_visits_employee')
@@ -187,7 +194,7 @@ def update_branch(request, pk):
         form = BranchForm(request.POST)
         if form.is_valid():
             form.save(branch=pk)
-            return redirect('/list-branches')
+            return redirect('/administrador')
         else:
             context = {'form': form}
             return render(request, 'admin/branches/update_branch.html', context)
@@ -211,7 +218,7 @@ def update_department(request, pk):
         department.branch_id = request.POST.get('branch')
         department.description = request.POST.get('description')
         department.save()
-        return redirect('/list-departments')
+        return redirect('/administrador')
 
     else:
         return render(request, 'admin/departments/update_department.html', {'department': department,'branches': branches})
@@ -231,12 +238,44 @@ def update_user(request, pk):
         form = CustomUserChangeForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
-            return redirect('/list-users')
+            return redirect('/administrador')
         else:
             context = {'form': form}
             return render(request, 'admin/users/update_user.html', context)
     else:
         return render(request, 'admin/users/update_user.html', {'form': form, 'branches': branches})
+    
+
+def admin_dashboard(request):
+    visits = Visits.objects.all().values_list('department__branch__name', 'id')
+    visits_dict = dict(visits)
+    visits_key = list(visits_dict.keys())
+    visits_values = list(visits_dict.values())
+
+    visits_dp = dict(Visits.objects.all().values_list('department__name', 'id'))
+    visits_dp_key = list(visits_dp.keys())
+    visits_dp_values = list(visits_dp.values())
+
+    awaiting_visits = Visits.objects.filter(status='Agendada').values('visitor__name', 'status', 'date', 'id')
+    confirm_visits = Visits.objects.filter(status='Realizada').values('visitor__name', 'status', 'date', 'id')
+    
+    branches = Branch.objects.all().values('id', 'description', 'name')
+    departments = Department.objects.all().values('name', 'description', 'branch__name', 'id')
+    users = CustomUser.objects.exclude(username='AnonymousUser').values('email', 'phone', 'first_name', 'last_name', 'id')
+    context = {
+        'admin': request.user,
+        'awaiting_visits': awaiting_visits.count(),
+        'confirmed_visits': confirm_visits.count(),
+        'visits': visits.count(),
+        'visits_key': visits_key,
+        'visits_values': visits_values,
+        'visits_dp_key': visits_dp_key,
+        'visits_dp_values': visits_dp_values,
+        'branches': branches,
+        'departments': departments,
+        'users': users
+    }
+    return render(request, 'admin/dashboard.html', context)
     
 ######################################## USUÁRIOS ########################################
 

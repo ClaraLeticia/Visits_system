@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="{% static '/css/style.css' %}">
-    <title>Criar setor</title>
+    <title>Atualizar setor</title>
 </head>
 <body>
     <main id="form_container">
         <div id="form_header">
-            <h1 id="form_title">Criar Setor</h1>
+            <h1 id="form_title">Atualizar Setor</h1>
         </div>
 
         <form method="POST" id="form">
@@ -36,7 +36,7 @@
                     <select id="id_branch" name="branch">
                         <option value="">Selecione a Unidade</option>
                         {% for branch in branches %}
-                            <option value="{{ branch.id }}">{{ branch.name }}</option>
+                            <option value="{{ branch.id }}" {% if branch.id == department.branch.id %}selected{% endif %}>{{ branch.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -44,7 +44,7 @@
 
             <button type="submit" class="btn-default">
                 <i class="fa-solid fa-check"></i>
-                Criar setor
+                Atualizar setor
             </button>
         </form>
     </main>

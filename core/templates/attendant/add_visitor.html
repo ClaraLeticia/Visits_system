@@ -77,8 +77,12 @@
 <body>
     <div class="container">
         <h2>Registrar Visita</h2>
-        <form id="visitante-form" method="POST">
+        <form id="visitante-form" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
+
+            <div id="visitor-photo-container" style="text-align:center; margin-top:20px;">
+                <img id="visitor-photo" src="" alt="Foto do Visitante" style="max-width: 150px;">
+            </div>
             
             <label for="cpf">CPF:</label>
             <input type="text" id="cpf" name="cpf" required oninput="buscarVisitante()">
@@ -93,7 +97,9 @@
             <input type="text" id="phone" name="phone">
 
             <label for="foto">Foto:</label>
-            <input type="file" id="foto" name="foto" accept="image/*">
+            <input type="file" id="photo" name="photo" accept="image/*">
+
+
 
             <button type="submit">Registrar</button>
         </form>
@@ -113,6 +119,15 @@
                         document.getElementById('name').value = data.name;
                         document.getElementById('rg').value = data.rg;
                         document.getElementById('phone').value = data.phone;
+                        if (data.photo) {
+                            let imgElement = document.getElementById('visitor-photo');
+                            imgElement.src = data.photo;  // Atualiza o caminho da foto
+                            imgElement.style.display = 'block';  // Exibe a imagem
+                            let photoInput = document.getElementById('photo');
+                            photoInput.value = data.photo;  // Não é mais necessário enviar a foto
+                        } else {
+                            document.getElementById('visitor-photo').style.display = 'none';  // Oculta a imagem
+                        }
                     } else {
                         // Caso o visitante não exista, limpar os campos
                         document.getElementById('name').value = "";
