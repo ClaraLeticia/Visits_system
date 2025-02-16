@@ -2,14 +2,27 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from core.forms import *
 from django.contrib import messages
-from .models import Department, Visitor, CustomUser, Visits, Branch
+from .models import Visitor, Visits
 from django.http import JsonResponse
 from guardian.decorators import permission_required_or_403
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count
 
 
+        
+# Função para retornar os setores de uma unidade em específico
+#@login_required
+#@permission_required_or_403('core.admin_permission')
+def get_departments(request):
+    branch_id = request.GET.get('branch_id')
+    departments = Department.objects.filter(branch_id=branch_id).values('id', 'name')
+    return JsonResponse({'departments': list(departments)})
 
+#@login_required
+#@permission_required_or_403('core.admin_permission')
+def get_func_user(request):
+    department_id = request.GET.get('department_id')
+    users = CustomUser.objects.filter(department_id=department_id, funcionario = True).values('id', 'username')
+    return JsonResponse({'users': list(users)})
 
 ######################################## ATENDETENTE ########################################
 ## Cadastro de visitas
@@ -90,52 +103,7 @@ def get_visitors_by_cpf(request):
             'photo': visitor.photo.url if visitor.photo else None       
         })
     else:
-        return JsonResponse({'error': 'Visitante não encontrado'})
-
-######################################## Funcionario ########################################
-#@login_required
-#@permission_required_or_403('core.employee_permission')
-def get_visits_by_func(request):
-    awaiting_visits = Visits.objects.filter(user=request.user, status='Agendada').values('visitor__name', 'status', 'date', 'id', 'visitor__photo')
-   
-    confirm_visits = Visits.objects.filter(user=request.user, status='Realizada').values('visitor__name', 'status', 'date', 'id')
-
-    context = {
-        'employee': request.user,
-        'awaiting_visits': awaiting_visits,
-        'confirmed_visits': confirm_visits,
-        'awaiting_count': awaiting_visits.count(),
-        'confirmed_count': confirm_visits.count(),
-    }
-
-
-    return render(request, 'employee/dashboard.html', context)
-
-#@login_required
-#@permission_required_or_403('core.employee_permission')
-def confirm_visit(request):
-    visit_id = request.GET.get('visit_id')
-    visit = Visits.objects.get(id=visit_id)
-    visit.status = 'Realizada'
-    visit.save()
-    return redirect('/funcionario')
-    
-        
-# Função para retornar os setores de uma unidade em específico
-#@login_required
-#@permission_required_or_403('core.admin_permission')
-def get_departments(request):
-    branch_id = request.GET.get('branch_id')
-    departments = Department.objects.filter(branch_id=branch_id).values('id', 'name')
-    return JsonResponse({'departments': list(departments)})
-
-#@login_required
-#@permission_required_or_403('core.admin_permission')
-def get_func_user(request):
-    department_id = request.GET.get('department_id')
-    users = CustomUser.objects.filter(department_id=department_id, funcionario = True).values('id', 'username')
-    return JsonResponse({'users': list(users)})
-    
+        return JsonResponse({'error': 'Visitante não encontrado'})    
     
 ######################################## USUÁRIOS ########################################
 

@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'core', # Adicionando o app criado
     'guardian', # Adicionando o app guardian
     'imagekit', # Adicionando o app imagekit
-    'adminApp', # Adicionando o app admin contendo suas views
+    'adminApp', # Adicionando o app admin contendo sua lógica de negócio
+    'employeeApp', # Adicionando o app employee contendo sua lógica de negócio
 
 ]
 

@@ -16,8 +16,6 @@ urlpatterns = [
    path('add-visitors/', add_visitor, name='add_visitor'),
    path('add-visit/', add_visit, name='add_visit'),
    path('get-func-user/', get_func_user, name='get_func_user' ),
-   path('funcionario/', get_visits_by_func, name='get_visits_by_func'),
-   path('confirm-visit/', confirm_visit, name='confirm_visit'),
    path('atendente/', attendant_dashboard, name='atendente'),
    path('logout/', logoutView, name='logout'),
 ]

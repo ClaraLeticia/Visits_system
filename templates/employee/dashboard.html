@@ -63,7 +63,7 @@
                         {% endif %}
                         <td class="border px-4 py-2">{{ visit.visitor__name }}</td>
                         <td class="border px-4 py-2">{{ visit.date|date:"d/m/Y H:i"}}</td>
-                        <td class="border px-4 py-2"> <a href="/confirm_visit/{{ visit.id }}" class="btn-default">Confirmar</a></td>
+                        <td class="border px-4 py-2"> <a href="/funcionario/confirm-visit/{{ visit.id }}" class="btn-default">Confirmar</a></td>
                     </tr>
                     {% empty %}
                         <tr>
