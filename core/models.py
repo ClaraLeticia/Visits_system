@@ -73,32 +73,37 @@ class CustomUser(AbstractUser):
     branch = models.ForeignKey('Branch', on_delete=models.CASCADE, null=True, blank=True)
     status = models.CharField(max_length=10, choices=choices, default='Ativo')
 
-
-
     objects = CustomUserManager()
+
+    class Meta:
+        permissions = [
+            ('admin_permission', 'admin can view add and change branches,departments and users'),
+            ('attendant_permission', 'attendant can view add and change visitors and visits'),
+            ('employee_permission', 'employee can view add and change visits'),
+        ]
     
     def __str__(self):
         return self.username
     
 @receiver(post_save, sender=CustomUser)
 def assign_user_permissions(sender, instance, created, **kwargs):
+    print('Entrou no signal')
+    print(instance.atendente)
     if created:
         if instance.administrador:
             group, _ = Group.objects.get_or_create(name="Administradores")
-            assign('core.add_branch', group)
+            assign('core.admin_permission', group)
             instance.groups.add(group)
         
         if instance.atendente:
             group, _ = Group.objects.get_or_create(name="Atendentes")
             # Adicionando permissões para o grupo de atendentes
-            permissions = ['core.add_visitor', 'core.view_visitor', 'core.delete_visitor', 'core.change_visitor', 'core.add_visits',]
-            for perm in permissions:
-                assign(perm, group)
+            assign('core.attendant_permission', group)
             instance.groups.add(group)
         
         if instance.funcionario:
             group, _ = Group.objects.get_or_create(name="Funcionários")
-            assign('core.change_confirm_visits_employee', group)
+            assign('core.employee_permission', group)
             instance.groups.add(group)
 
     
@@ -112,10 +117,7 @@ class Visits(models.Model):
     def __str__(self):
         return self.visitor.name
     
-    class Meta:
-        permissions = [
-            ('change_confirm_visits_employee', 'employee can change the status of visits'),
-        ]
+
 
     
 

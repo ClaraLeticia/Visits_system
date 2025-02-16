@@ -13,8 +13,8 @@ from django.db.models import Count
 
 ######################################## ATENDETENTE ########################################
 ## Cadastro de visitas
-#@login_required
-#@permission_required_or_403('core.add_visits')
+@login_required
+@permission_required_or_403('core.attendant_permission')
 def attendant_dashboard(request):
     
     visits = Visits.objects.filter(department__branch=request.user.branch).order_by('-date').values('visitor__name', 'status', 'date', 'id')
@@ -32,7 +32,8 @@ def attendant_dashboard(request):
 
     }
     return render(request, 'attendant/dashboard.html', context)
-
+@login_required
+@permission_required_or_403('core.attendant_permission')
 def add_visit(request):
     if request.method == 'POST':
         cpf = request.GET.get('cpf')
@@ -51,8 +52,8 @@ def add_visit(request):
         context = {'form': form}
         return render(request, 'attendant/add_visit.html', context)
     
-# Cadastro de visitante    
-#@permission_required_or_403('core.add_visitor') # Decorator para verificar se o usuário tem permissão para adicionar visitantes
+@login_required
+@permission_required_or_403('core.attendant_permission')
 def add_visitor(request):
     
     if request.method == 'POST':
@@ -78,8 +79,8 @@ def add_visitor(request):
 
     
  # Função para retornar a lista de visitantes
-#@login_required # Decorator para verificar se o usuário está logado
-#@permission_required_or_403('core.view_visitor') # Decorator para verificar se o usuário tem permissão para visualizar visitantes
+@login_required
+@permission_required_or_403('core.attendant_permission')
 def get_visitors_by_cpf(request):
     cpf = request.GET.get('cpf')
     visitor = Visitor.objects.filter(cpf=cpf)
@@ -95,8 +96,8 @@ def get_visitors_by_cpf(request):
         return JsonResponse({'error': 'Visitante não encontrado'})
 
 ######################################## Funcionario ########################################
-#@login_required
-#@permission_required_or_403('core.change_confirm_visits_employee')
+@login_required
+@permission_required_or_403('core.employee_permission')
 def get_visits_by_func(request):
     awaiting_visits = Visits.objects.filter(user=request.user, status='Agendada').values('visitor__name', 'status', 'date', 'id')
     confirm_visits = Visits.objects.filter(user=request.user, status='Realizada').values('visitor__name', 'status', 'date', 'id')
@@ -112,8 +113,8 @@ def get_visits_by_func(request):
 
     return render(request, 'employee/dashboard.html', context)
 
-#@login_required
-#@permission_required_or_403('core.change_confirm_visits_employee')
+@login_required
+@permission_required_or_403('core.employee_permission')
 def confirm_visit(request):
     visit_id = request.GET.get('visit_id')
     visit = Visits.objects.get(id=visit_id)
@@ -142,17 +143,22 @@ def add_users(request):
         return render(request, 'admin/users/add_user.html', context)
 
 # Função para retornar os setores de uma unidade em específico
+@login_required
+@permission_required_or_403('core.admin_permission')
 def get_departments(request):
     branch_id = request.GET.get('branch_id')
     departments = Department.objects.filter(branch_id=branch_id).values('id', 'name')
     return JsonResponse({'departments': list(departments)})
 
+@login_required
+@permission_required_or_403('core.admin_permission')
 def get_func_user(request):
     department_id = request.GET.get('department_id')
     users = CustomUser.objects.filter(department_id=department_id, funcionario = True).values('id', 'username')
     return JsonResponse({'users': list(users)})
 
-
+@login_required
+@permission_required_or_403('core.admin_permission')
 def add_branch(request):
     if request.method == 'POST':
         form = BranchForm(request.POST)
@@ -168,6 +174,8 @@ def add_branch(request):
         context = {'form': form}
         return render(request, 'admin/branches/add_branch.html', context)
     
+@login_required
+@permission_required_or_403('core.admin_permission')
 def add_department(request):
     branches = Branch.objects.all().values('id', 'name')
     if request.method == 'POST':
@@ -188,6 +196,8 @@ def list_branches(request):
     branchs = Branch.objects.all()
     return render(request, 'admin/branches/list_branches.html', {'branches': branchs})
 
+@login_required
+@permission_required_or_403('core.admin_permission')
 def update_branch(request, pk):
     branch = get_object_or_404(Branch, id=pk)
     if request.method == 'POST':
@@ -208,7 +218,8 @@ def list_departments(request):
     departments = Department.objects.all()
     return render(request, 'admin/departments/list_departments.html', {'departments': departments})
     
-
+@login_required
+@permission_required_or_403('core.admin_permission')
 def update_department(request, pk):
     department = get_object_or_404(Department, id=pk)
     branches = Branch.objects.all()
@@ -230,6 +241,8 @@ def list_users(request):
     users = CustomUser.objects.exclude(username='AnonymousUser')
     return render(request, 'admin/users/list_users.html', {'users': users})
 
+@login_required
+@permission_required_or_403('core.admin_permission')
 def update_user(request, pk):
     branches = Branch.objects.all().values('id', 'name')
     user = get_object_or_404(CustomUser, id=pk)
@@ -245,7 +258,8 @@ def update_user(request, pk):
     else:
         return render(request, 'admin/users/update_user.html', {'form': form, 'branches': branches})
     
-
+@login_required
+@permission_required_or_403('core.admin_permission')
 def admin_dashboard(request):
     visits = Visits.objects.all().values_list('department__branch__name', 'id')
     visits_dict = dict(visits)
