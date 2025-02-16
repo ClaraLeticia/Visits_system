@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect
-from core.models import Department, CustomUser, Visits
-from django.http import JsonResponse
+from core.models import Visits
 from guardian.decorators import permission_required_or_403
 from django.contrib.auth.decorators import login_required
 
@@ -27,7 +26,7 @@ def employee_dashboard(request):
 
 #@login_required
 #@permission_required_or_403('core.employee_permission')
-def confirm_visit(request, pk):
+def confirm_visit(pk):
     visit_id = pk
     visit = Visits.objects.get(id=visit_id)
     visit.status = 'Realizada'

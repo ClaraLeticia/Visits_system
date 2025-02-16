@@ -11,12 +11,6 @@ from django.conf.urls.static import static
 urlpatterns = [
    path('', loginPage, name='login'),
    path('login/', loginPage, name='login'),
-   path('get-departments/', get_departments, name='get_departments'),
-   path('get-visitors/', get_visitors_by_cpf, name='get_visitors'),
-   path('add-visitors/', add_visitor, name='add_visitor'),
-   path('add-visit/', add_visit, name='add_visit'),
-   path('get-func-user/', get_func_user, name='get_func_user' ),
-   path('atendente/', attendant_dashboard, name='atendente'),
    path('logout/', logoutView, name='logout'),
 ]
 

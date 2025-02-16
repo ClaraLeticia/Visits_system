@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'imagekit', # Adicionando o app imagekit
     'adminApp', # Adicionando o app admin contendo sua lógica de negócio
     'employeeApp', # Adicionando o app employee contendo sua lógica de negócio
+    'attendantApp', # Adicionando o app attendant contendo sua lógica de negócio
 
 ]
 

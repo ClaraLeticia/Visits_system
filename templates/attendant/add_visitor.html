@@ -73,7 +73,7 @@
                 document.getElementById('error-message').textContent = "CPF inválido.";
             } else { 
                 console.log(cpf)
-                const response = await fetch(`/get-visitors/?cpf=${cpf}`);
+                const response = await fetch(`/atendente/get-visitors/?cpf=${cpf}`);
                 if(response.ok){
                     const data = await response.json();
                     if(!data.error){

@@ -41,7 +41,7 @@
             async function fetchDepartment(){
                 const branchId = {{ user.branch_id }};
                 let departmentSelect = document.getElementById("id_department");
-                const response = await fetch(`/get-departments/?branch_id=${branchId}`)
+                const response = await fetch(`/atendente/get-departments/?branch_id=${branchId}`)
                 if (response.ok) {
                     const data = await response.json();
                     if (!data.error){
@@ -63,7 +63,7 @@
             async function fetchFuncUser() {
                 const departmentId = document.getElementById("id_department").value;
                 let userSelect = document.getElementById("id_user");
-                const response = await fetch(`/get-func-user/?department_id=${departmentId}`)
+                const response = await fetch(`/atendente/get-func-user/?department_id=${departmentId}`)
                 if (response.ok) {
                     const data = await response.json();
                     if (!data.error){
