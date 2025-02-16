@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'core', # Adicionando o app criado
     'guardian', # Adicionando o app guardian
     'imagekit', # Adicionando o app imagekit
+    'adminApp', # Adicionando o app admin contendo suas views
 
 ]
 

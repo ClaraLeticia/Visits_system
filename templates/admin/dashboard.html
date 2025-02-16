@@ -64,7 +64,7 @@
         <div class="bg-white p-6 mt-6 rounded-lg shadow-md">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-4xl font-semibold">Departamentos</h3>
-                <a href="/add-department" class="btn-default">Adicionar Departamento</a>
+                <a href="add-department/" class="btn-default">Adicionar Departamento</a>
             </div>
             <table class="min-w-full table-auto">
                 <thead>
@@ -77,7 +77,7 @@
                 <tbody>
                     {% for department in departments %}
                     <tr>
-                        <td class="border px-4 py-2"><a href="/update-department/{{ department.id }}">{{ department.name }}</a></td>
+                        <td class="border px-4 py-2"><a href="update-department/{{ department.id }}">{{ department.name }}</a></td>
                         <td class="border px-4 py-2">{{ department.description }}</td>
                         <td class="border px-4 py-2">{{ department.branch__name}}</td>
                     </tr>
@@ -89,7 +89,7 @@
         <div class="bg-white p-6 mt-6 rounded-lg shadow-md">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-4xl font-semibold mb-4">Unidades</h3>
-                <a href="/add-department/" class="btn btn-default mb-4">Cadastrar Unidade</a>
+                <a href="add-branch/" class="btn btn-default mb-4">Cadastrar Unidade</a>
             </div>
             <table class="min-w-full table-auto">
                 <thead>
@@ -101,7 +101,7 @@
                 <tbody>
                     {% for branch in branches %}
                     <tr>
-                        <td class="border px-4 py-2"><a href="/update-branch/{{branch.id}}">{{ branch.name }} </a></td>
+                        <td class="border px-4 py-2"><a href="update-branch/{{branch.id}}">{{ branch.name }} </a></td>
                         <td class="border px-4 py-2">{{ branch.description }}</td>
                     </tr>
                     {% endfor %}
@@ -112,7 +112,7 @@
         <div class="bg-white p-6 mt-6 rounded-lg shadow-md">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-4xl font-semibold mb-4">Usuário</h3>
-                <a href="/add-users/" class="btn btn-default mb-4">Cadastrar Usuário</a>
+                <a href="add-users/" class="btn btn-default mb-4">Cadastrar Usuário</a>
             </div>
             <table class="min-w-full table-auto">
                 <thead>
@@ -125,7 +125,7 @@
                 <tbody>
                     {% for user in users %}
                     <tr>
-                        <td class="border px-4 py-2"><a href="/update-user/{{user.id}}">{{ user.first_name }} {{ user.last_name}} </a></td>
+                        <td class="border px-4 py-2"><a href="update-user/{{user.id}}">{{ user.first_name }} {{ user.last_name}} </a></td>
                         <td class="border px-4 py-2">{{ user.phone }}</td>
                         <td class="border px-4 py-2">{{ user.email }}</td>
                     </tr>
