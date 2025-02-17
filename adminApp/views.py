@@ -1,11 +1,10 @@
 from django.shortcuts import render
 from django.shortcuts import render, redirect, get_object_or_404
 from core.forms import *
-from django.contrib import messages
-from core.models import Department, CustomUser, Branch
-from django.http import JsonResponse
+from core.models import Department, CustomUser, Branch, Visits
 from guardian.decorators import permission_required_or_403
 from django.contrib.auth.decorators import login_required
+from collections import Counter
 
 # Create your views here.
 ######################################## ADMINISTRADOR ########################################
@@ -13,14 +12,20 @@ from django.contrib.auth.decorators import login_required
 @login_required
 @permission_required_or_403('core.admin_permission')
 def admin_dashboard(request):
-    visits = Visits.objects.all().values_list('department__branch__name', 'id')
-    visits_dict = dict(visits)
+    visits = Visits.objects.all().values_list('department__branch__name')
+    visits_keys = [visit[0] for visit in visits]
+    visits_dict = dict(Counter(visits_keys))
     visits_key = list(visits_dict.keys())
     visits_values = list(visits_dict.values())
+    
 
-    visits_dp = dict(Visits.objects.all().values_list('department__name', 'id'))
-    visits_dp_key = list(visits_dp.keys())
-    visits_dp_values = list(visits_dp.values())
+    visits_dp = Visits.objects.all().values_list('department__name')
+    visits_dp_keys = [visit[0] for visit in visits_dp]
+    visits_dp_values = Counter(visits_dp_keys)
+    visits_dp_key = list(visits_dp_values.keys())
+    visits_dp_values = list(visits_dp_values.values())
+    
+   
 
     awaiting_visits = Visits.objects.filter(status='Agendada').values('visitor__name', 'status', 'date', 'id')
     confirm_visits = Visits.objects.filter(status='Realizada').values('visitor__name', 'status', 'date', 'id')
