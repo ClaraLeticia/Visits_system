@@ -174,3 +174,16 @@ input:-webkit-autofill {
     background-color: #e0b8fe; 
     border: 1px solid #ddd;
 }
+.errorlist {
+    color: red;
+    font-size: 14px;
+    list-style: none;
+    padding: 0;
+    margin-top: 5px;
+    display: none;
+
+}
+
+.error-message {
+    font-weight: bold;
+}

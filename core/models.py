@@ -2,19 +2,18 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.contrib.auth.models import Group, Permission
-from django.contrib.contenttypes.models import ContentType
-from guardian.shortcuts import assign_perm, assign, remove_perm
+from django.contrib.auth.models import Group
+from guardian.shortcuts import assign
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
-
+from .validators import *
 # Create your models here.
 
 class Visitor(models.Model):
-    cpf = models.CharField(max_length=11, primary_key=True)
-    rg = models.CharField(max_length=9, unique=True)
+    cpf = models.CharField(max_length=11, primary_key=True, validators=[validate_cpf])
+    rg = models.CharField(max_length=9, unique=True, validators=[validate_rg])
     name = models.CharField(max_length=100)
-    phone = models.CharField(max_length=20)
+    phone = models.CharField(max_length=20, validators=[validate_phone])
     photo = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
     profile_picture = ImageSpecField(source='photo',
                                       processors=[ResizeToFill(100, 50)],
@@ -68,7 +67,7 @@ class CustomUser(AbstractUser):
     atendente = models.BooleanField(default=False)
     funcionario = models.BooleanField(default=False)
     email = models.EmailField(unique=True)
-    phone = models.CharField(max_length=20, null=False, blank=False)
+    phone = models.CharField(max_length=20, null=False, blank=False, validators=[validate_phone])
     department = models.ForeignKey('Department', on_delete=models.CASCADE, null=True, blank=True)
     branch = models.ForeignKey('Branch', on_delete=models.CASCADE, null=True, blank=True)
     status = models.CharField(max_length=10, choices=choices, default='Ativo')

@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
 from core.forms import *
 from core.models import Visitor, Visits
@@ -30,19 +31,16 @@ def attendant_dashboard(request):
 @permission_required_or_403('core.attendant_permission')
 def add_visitor(request):
     if request.method == 'POST':
-        cpf = request.POST.get('cpf')
-        name = request.POST.get('name')
-        rg = request.POST.get('rg')
-        phone = request.POST.get('phone')
-        photo = f"/profile_pictures/{request.FILES.get('photo')}"
-        
-        if Visitor.objects.filter(cpf=cpf).exists():
-            visits = Visitor.objects.filter(cpf=cpf)
-            visits.update(name=name, rg=rg, phone=phone, photo=photo)
-            return redirect(f'/atendente/add-visit/?cpf={cpf}')
+        print("entrou1")
+        form = VisitorForm(request.POST, request.FILES)
+        if form.is_valid():
+            print("entrou2")
+            visitor = form.save()
+            return redirect('/atendente/add-visit/?cpf=${visitor.cpf}')
         else:
-            Visitor.objects.create(cpf=cpf, name=name, rg=rg, phone=phone, photo=photo)
-            return redirect(f'/atendente/add-visit/?cpf={cpf}')   
+            print(form.errors)
+            context = {'form': form}
+            return render(request, 'attendant/add_visitor.html', context)
     else:
         form = VisitorForm()
         context = {'form': form}

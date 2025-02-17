@@ -1,3 +1,4 @@
+from django.utils.translation import gettext_lazy as _
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import CustomUser, Branch, Department, Visitor, Visits
@@ -56,24 +57,59 @@ class VisitorForm(forms.ModelForm):
     cpf = forms.CharField(max_length=11)
     rg = forms.CharField(max_length=9)
     phone = forms.CharField(max_length=20)
-    photo = forms.ImageField()
+    photo = forms.ImageField(required=False)
 
     class Meta:
         model = Visitor
         fields = ['name', 'cpf', 'rg', 'phone', 'photo']
 
+    def clean(self):
+        cleaned_data = super().clean()
+        cpf = cleaned_data.get('cpf')
+        rg = cleaned_data.get('rg')
+
+        if cpf and rg:
+            try:
+                visitor = Visitor.objects.get(cpf=cpf)
+                # Substitui a instância do formulário pelo visitante encontrado
+                self.instance = visitor
+            except Visitor.DoesNotExist:
+                pass
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        visitor = super().save(commit=False)
+
+        # Atualiza os campos
+        visitor.name = self.cleaned_data['name']
+        visitor.phone = self.cleaned_data['phone']
+        visitor.rg = self.cleaned_data['rg']
+
+        if 'photo' in self.cleaned_data and self.cleaned_data['photo']:
+            visitor.photo = self.cleaned_data['photo']
+
+        if commit:
+            visitor.save()
+        return visitor
+
 
     
 
 class CustomUserCreationForm(UserCreationForm):
-    email = forms.EmailField(required=True)
-    administrador = forms.BooleanField(required=False)
-    atendente = forms.BooleanField(required=False)
-    funcionario = forms.BooleanField(required=False)
+    username = forms.CharField( max_length=150, error_messages={
+            "unique": _("Este nome de usuário já está em uso."),
+            "invalid": _("O nome de usuário pode conter apenas letras, números e @/./+/-/_"),
+        })
+
+    email = forms.EmailField( error_messages={ "unique": _("Este e-mail já está cadastrado.")})
+
+
+    password2 = forms.CharField(error_messages={ "password_mismatch": _("As senhas não coincidem.")})
+
+ 
     branch = forms.ModelChoiceField(queryset=Branch.objects.all(), required=False, empty_label="Selecione uma unidade")
     department = forms.ModelChoiceField(queryset=Department.objects.all(), required=False, empty_label="Selecione um setor")
-    first_name = forms.CharField(max_length=30, required=True)
-    last_name = forms.CharField(max_length=30, required=True)
     class Meta:
         model = CustomUser
         fields = ['username', 'email', 'password1', 'password2', 'administrador', 'atendente', 'funcionario', 'branch', 'department', 'first_name', 'last_name', 'phone']
@@ -86,9 +122,10 @@ class CustomUserCreationForm(UserCreationForm):
         branch = cleaned_data.get("branch")
         department = cleaned_data.get("department")
 
-        # Se for atendente ou funcionário, a unidade e setor são obrigatórios
+        # Se for atendente a unidade é obrigatório
         if (atendente) and not branch:
             self.add_error("branch", "Unidade é obrigatória para Atendentes.")
+        # Se for funcionário unidade e setor são obrigatórios
         if (funcionario) and not department and not branch:
             self.add_error("department", "Unidade e Setor é obrigatório para Funcionários.")
 

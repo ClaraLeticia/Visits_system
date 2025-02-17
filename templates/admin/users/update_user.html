@@ -23,44 +23,38 @@
                 <div class="input-box">
                     <label for="username" class="form-label">Nome de Usuário</label>
                     <div class="input-field">
-                        <input type="text" name="username" id="username" class="form-control" placeholder="Fulano" value="{{ form.username.value }}">
+                        <input type="text" name="username" id="username" class="form-control" placeholder="Fulano" value="{{ form.username.value }}" required>
                     </div>
                 </div>
 
                 <div class="input-box">
                     <label for="first_name" class="form-label">Primeiro nome</label>
                     <div class="input-field">
-                        <input type="text" name="first_name" id="first_name" class="form-control" placeholder="Fulano" value="{{ form.first_name.value }}">
+                        <input type="text" name="first_name" id="first_name" class="form-control" placeholder="Fulano" value="{{ form.first_name.value }}" required>
                     </div>
                 </div>
 
                 <div class="input-box">
                     <label for="last_name" class="form-label">Último nome</label>
                     <div class="input-field">
-                        <input type="text" name="last_name" id="last_name" class="form-control" placeholder="De Tal" value="{{ form.last_name.value }}">
+                        <input type="text" name="last_name" id="last_name" class="form-control" placeholder="De Tal" value="{{ form.last_name.value }}" required>
                     </div>
                 </div>
 
                 <div class="input-box">
                     <label for="email" class="form-label">E-mail</label>
                     <div class="input-field">
-                        <input type="email" name="email" id="email" class="form-control" placeholder="exemplo@gmail.com" value="{{ form.email.value }}">
+                        <input type="email" name="email" id="email" class="form-control" placeholder="exemplo@gmail.com" value="{{ form.email.value }}" required> 
                     </div>
                 </div>
 
                 <div class="input-box">
                     <label for="phone" class="form-label">Telefone</label>
                     <div class="input-field">
-                        <input type="tel" name="phone" id="phone" class="form-control" placeholder="(XX) XXXX-XXXX" value="{{ form.phone.value }}">
+                        <input type="tel" name="phone" id="phone" class="form-control" placeholder="(XX) XXXX-XXXX" value="{{ form.phone.value }}" required>
                     </div>
                 </div>
 
-                <div class="input-box">
-                    <label for="password" class="form-label">Senha (deixe em branco para manter a atual)</label>
-                    <div class="input-field">
-                        <input type="password" name="password" id="password" class="form-control" placeholder="*******">
-                    </div>
-                </div>
 
                 <div class="radio-container">
                     <label class="form-label">Função</label>
@@ -135,7 +129,7 @@
             async function fetchDepartments() {
                 const branchId = document.getElementById("id_branch").value;
                 let departmentSelect = document.getElementById("id_department");
-                const response = await fetch(`/get-departments/?branch_id=${branchId}`)
+                const response = await fetch(`/atendente/get-departments/?branch_id=${branchId}`)
                 if (response.ok) {
                     const data = await response.json();
                     if (!data.error){
