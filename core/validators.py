@@ -17,13 +17,9 @@ def validate_rg(value):
         raise ValidationError('O RG deve ter 9 dígitos')
     
 def validate_cpf(value):
-    if len(value) != 9:
+    if len(value) != 11:
         raise ValidationError('O CPF deve ter 11 dígitos')
 
 def validate_phone(value):
-    if len(value) != 9:
+    if len(value) != 11:
         raise ValidationError('O Telefone deve ter 11 dígitos')
-
-def validate_password(value):
-    if len(value) != 9:
-        raise ValidationError('Senha deve ter 8 caracteres.\n.Senha muito comum.\nSenha deve conter letras')

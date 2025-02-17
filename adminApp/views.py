@@ -69,11 +69,13 @@ def update_user(request, pk):
     user = get_object_or_404(CustomUser, id=pk)
     form = CustomUserChangeForm(instance=user)
     if request.method == 'POST':
+        user.set_password(request.POST.get('password'))
         form = CustomUserChangeForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
             return redirect('/administrador')
         else:
+            print(form.errors)
             context = {'form': form}
             return render(request, 'admin/users/update_user.html', context)
     else:
