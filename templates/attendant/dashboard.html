@@ -15,18 +15,18 @@
 
         <div class="bg-purple-300 mb-3 p-6 rounded-lg shadow-md">
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-3xl font-bold mb-6">Painel do Atendente</h2>
+                <h2 class="text-5xl font-bold mb-6">Painel do Atendente</h2>
                 <a href="/logout" class="btn-default">
                     <span class="glyphicon glyphicon-log-out"></span> Log out
                 </a>
             </div>
             <div class="bg-white p-6 rounded-lg shadow-md">
-                <h5 class="card-title">Atendente: {{ attendant.first_name }} {{ attendant.last_name }}</h5>
-                <p class="card-text">Unidade: {{ attendant.branch }}</p>
-                <p class="card-text">Email: {{ attendant.email }}</p>
+                <h5 class="text-3xl font-semiboldbold mb-6">Atendente: {{ attendant.first_name }} {{ attendant.last_name }}</h5>
+                <h5 class="text-3xl font-semiboldbold mb-6">Email: {{ attendant.email }}</h5>
+                <h5 class="text-3xl font-semiboldbold mb-6">Unidade: {{ attendant.branch }}</h5>
+
             </div>
         </div>
-
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- Card de Visitas Aguardando -->
             <div class="bg-white p-6 rounded-lg shadow-md">
@@ -35,12 +35,12 @@
             </div>
             <!-- Card de Visitas Confirmadas -->
             <div class="bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-3xl font-semibold mb-4">Visitas Confirmadas</h3>
+                <h3 class="text-3xl font-semibold mb-4">Visitas Agendadas</h3>
                 <p class="text-2xl font-bold">{{ awaiting_count }}</p>
             </div>
 
             <div class="bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-3xl font-semibold mb-4">Visitas Confirmadas</h3>
+                <h3 class="text-3xl font-semibold mb-4">Visitas Realizadas</h3>
                 <p class="text-2xl font-bold">{{ confirmed_count }}</p>
             </div>
         </div>

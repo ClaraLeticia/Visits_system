@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="{% static '/css/style.css' %}">
-    <title>Cadastrar Visistante</title>
+    <title>Cadastrar Visitante</title>
 </head>
 <body>
     <main id="form_container">
         <div id="form_header">
-            <h1 id="form_title">Cadastrar Visistante</h1>
+            <h1 id="form_title">Cadastrar Visitante</h1>
         </div>
 
         <div id="visitor-photo-container" style="text-align:center; margin-top:20px;">
@@ -23,7 +23,7 @@
             <div id="input_container">
 
                 <div class="input-box">
-                    <label for="cpf" class="form-label">CPF do Visistante</label>
+                    <label for="cpf" class="form-label">CPF do Visitante</label>
                     <div class="input-field">
                         <input type="text" name="cpf" id="cpf" class="form-control" placeholder="XXXXXXXXXXX" required oninput="fetchVisitorData()">
                     </div>
@@ -64,6 +64,8 @@
                 Cadastrar Visitante
             </button>
         </form>
+        <a href="/atendente/" class="btn-default" >Cancelar</a>
+
     </main>
 
     <script>

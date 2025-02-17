@@ -10,8 +10,8 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 ######################################## ADMINISTRADOR ########################################
 
-#@login_required
-#@permission_required_or_403('core.admin_permission')
+@login_required
+@permission_required_or_403('core.admin_permission')
 def admin_dashboard(request):
     visits = Visits.objects.all().values_list('department__branch__name', 'id')
     visits_dict = dict(visits)
@@ -62,8 +62,8 @@ def add_users(request):
         return render(request, 'admin/users/add_user.html', context)
     
 
-#@login_required
-#@permission_required_or_403('core.admin_permission')
+@login_required
+@permission_required_or_403('core.admin_permission')
 def update_user(request, pk):
     branches = Branch.objects.all().values('id', 'name')
     user = get_object_or_404(CustomUser, id=pk)
@@ -80,8 +80,8 @@ def update_user(request, pk):
         return render(request, 'admin/users/update_user.html', {'form': form, 'branches': branches})
 
 
-#@login_required
-#@permission_required_or_403('core.admin_permission')
+@login_required
+@permission_required_or_403('core.admin_permission')
 def add_branch(request):
     if request.method == 'POST':
         form = BranchForm(request.POST)
@@ -97,8 +97,8 @@ def add_branch(request):
         return render(request, 'admin/branches/add_branch.html', context)
     
 
-#@login_required
-#@permission_required_or_403('core.admin_permission')
+@login_required
+@permission_required_or_403('core.admin_permission')
 def update_branch(request, pk):
     branch = get_object_or_404(Branch, id=pk)
     if request.method == 'POST':
@@ -112,8 +112,8 @@ def update_branch(request, pk):
     else:
         return render(request, 'admin/branches/update_branch.html', {'branch': branch})
     
-#@login_required
-#@permission_required_or_403('core.admin_permission')
+@login_required
+@permission_required_or_403('core.admin_permission')
 def add_department(request):
     branches = Branch.objects.all().values('id', 'name')
     if request.method == 'POST':
@@ -131,8 +131,8 @@ def add_department(request):
     
 
     
-#@login_required
-#@permission_required_or_403('core.admin_permission')
+@login_required
+@permission_required_or_403('core.admin_permission')
 def update_department(request, pk):
     department = get_object_or_404(Department, id=pk)
     branches = Branch.objects.all()

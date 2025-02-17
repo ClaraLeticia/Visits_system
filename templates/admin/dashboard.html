@@ -17,26 +17,26 @@
 
         <div class="bg-purple-300 mb-3 p-6 rounded-lg shadow-md">
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-3xl font-bold mb-6">Painel do Administrador</h2>
+                <h2 class="text-5xl font-bold mb-6">Painel do Administrador</h2>
                 <a href="/logout" class="btn-default">
                     <span class="glyphicon glyphicon-log-out"></span> Log out
                 </a>
             </div>
             <div class="bg-white p-6 rounded-lg shadow-md">
-                <h5 class="card-title ">Administrador: {{ admin.first_name }} {{ admin.last_name }}</h5>
-                <p class="card-text">Email: {{ admin.email }}</p>
+                <h5 class="text-3xl font-semiboldbold mb-6">Administrador: {{ admin.first_name }} {{ admin.last_name }}</h5>
+                <h5 class="text-3xl font-semiboldbold mb-6">Email: {{ admin.email }}</h5>
             </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- Card de Visitas -->
             <div class="bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-3xl font-semibold mb-4">Visitas Totais</h3>
+                <h3 class="text-3xl font-semibold mb-4">Visitas</h3>
                 <p class="text-2xl font-bold">{{ visits }}</p>
             </div>
             <!-- Card de Visitas Aguardando -->
             <div class="bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-3xl font-semibold mb-4">Visitas Aguardando</h3>
+                <h3 class="text-3xl font-semibold mb-4">Visitas Agendadas</h3>
                 <p class="text-2xl font-bold">{{ awaiting_visits }}</p>
             </div>
             <!-- Card de Visitas Confirmadas -->
@@ -58,34 +58,6 @@
             </div>
         </div>
         
-
-
-        <!-- Tabelas de Departamentos e Unidades -->
-        <div class="bg-white p-6 mt-6 rounded-lg shadow-md">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-4xl font-semibold">Departamentos</h3>
-                <a href="add-department/" class="btn-default">Adicionar Departamento</a>
-            </div>
-            <table class="min-w-full table-auto">
-                <thead>
-                    <tr>
-                        <th class="px-4 py-2">Nome</th>
-                        <th class="px-4 py-2">Descrição</th>
-                        <th class="px-4 py-2">Unidade</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for department in departments %}
-                    <tr>
-                        <td class="border px-4 py-2"><a href="update-department/{{ department.id }}">{{ department.name }}</a></td>
-                        <td class="border px-4 py-2">{{ department.description }}</td>
-                        <td class="border px-4 py-2">{{ department.branch__name}}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
         <div class="bg-white p-6 mt-6 rounded-lg shadow-md">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-4xl font-semibold mb-4">Unidades</h3>
@@ -103,6 +75,34 @@
                     <tr>
                         <td class="border px-4 py-2"><a href="update-branch/{{branch.id}}">{{ branch.name }} </a></td>
                         <td class="border px-4 py-2">{{ branch.description }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+
+
+        <!-- Tabelas de Departamentos e Unidades -->
+        <div class="bg-white p-6 mt-6 rounded-lg shadow-md">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-4xl font-semibold">Setores</h3>
+                <a href="add-department/" class="btn-default">Adicionar setor</a>
+            </div>
+            <table class="min-w-full table-auto">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2">Nome</th>
+                        <th class="px-4 py-2">Descrição</th>
+                        <th class="px-4 py-2">Unidade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for department in departments %}
+                    <tr>
+                        <td class="border px-4 py-2"><a href="update-department/{{ department.id }}">{{ department.name }}</a></td>
+                        <td class="border px-4 py-2">{{ department.description }}</td>
+                        <td class="border px-4 py-2">{{ department.branch__name}}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

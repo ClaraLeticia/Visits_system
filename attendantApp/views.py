@@ -6,6 +6,8 @@ from guardian.decorators import permission_required_or_403
 from django.contrib.auth.decorators import login_required
 
 ######################################## ATENDETENTE ########################################
+@login_required
+@permission_required_or_403('core.attendant_permission')
 def attendant_dashboard(request):
     
     visits = Visits.objects.filter(department__branch=request.user.branch).order_by('-date').values('visitor__name', 'status', 'date', 'id')
@@ -24,8 +26,8 @@ def attendant_dashboard(request):
     }
     return render(request, 'attendant/dashboard.html', context)
 
-#@login_required
-#@permission_required_or_403('core.attendant_permission')
+@login_required
+@permission_required_or_403('core.attendant_permission')
 def add_visitor(request):
     if request.method == 'POST':
         cpf = request.POST.get('cpf')
@@ -48,8 +50,8 @@ def add_visitor(request):
 
     
  # Função para retornar a lista de visitantes
-#@login_required
-#@permission_required_or_403('core.attendant_permission')
+@login_required
+@permission_required_or_403('core.attendant_permission')
 def get_visitors_by_cpf(request):
     cpf = request.GET.get('cpf')
     visitor = Visitor.objects.filter(cpf=cpf)
@@ -66,10 +68,8 @@ def get_visitors_by_cpf(request):
 
 
 ## Cadastro de visitas
-#@login_required
-#@permission_required_or_403('core.attendant_permission')
-#@login_required
-#@permission_required_or_403('core.attendant_permission')
+@login_required
+@permission_required_or_403('core.attendant_permission')
 def add_visit(request):
     if request.method == 'POST':
         cpf = request.GET.get('cpf')
@@ -91,15 +91,14 @@ def add_visit(request):
 
         
 # Função para retornar os setores de uma unidade em específico
-#@login_required
-#@permission_required_or_403('core.admin_permission')
+@login_required
 def get_departments(request):
     branch_id = request.GET.get('branch_id')
     departments = Department.objects.filter(branch_id=branch_id).values('id', 'name')
     return JsonResponse({'departments': list(departments)})
 
-#@login_required
-#@permission_required_or_403('core.admin_permission')
+@login_required
+@permission_required_or_403('core.attendant_permission')
 def get_func_user(request):
     department_id = request.GET.get('department_id')
     users = CustomUser.objects.filter(department_id=department_id, funcionario = True).values('id', 'username')

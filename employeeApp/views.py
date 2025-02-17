@@ -6,8 +6,8 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 ######################################## Funcionario ########################################
-#@login_required
-#@permission_required_or_403('core.employee_permission')
+@login_required
+@permission_required_or_403('core.employee_permission')
 def employee_dashboard(request):
     awaiting_visits = Visits.objects.filter(user=request.user, status='Agendada').values('visitor__name', 'status', 'date', 'id', 'visitor__photo')
    
@@ -24,9 +24,9 @@ def employee_dashboard(request):
 
     return render(request, 'employee/dashboard.html', context)
 
-#@login_required
-#@permission_required_or_403('core.employee_permission')
-def confirm_visit(pk):
+@login_required
+@permission_required_or_403('core.employee_permission')
+def confirm_visit(request,pk):
     visit_id = pk
     visit = Visits.objects.get(id=visit_id)
     visit.status = 'Realizada'

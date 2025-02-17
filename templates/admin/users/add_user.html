@@ -11,7 +11,7 @@
 <body>
     <main id="form_container">
         <div id="form_header">
-            <h1 id="form_title">Login</h1>
+            <h1 id="form_title">Usuário</h1>
             <button class="btn-default">
                 <i class="fa-solid fa-right-to-bracket"></i>
             </button>
@@ -145,7 +145,7 @@
             async function fetchDepartments() {
                 const branchId = document.getElementById("id_branch").value;
                 let departmentSelect = document.getElementById("id_department");
-                const response = await fetch(`/get-departments/?branch_id=${branchId}`)
+                const response = await fetch(`/atendente/get-departments/?branch_id=${branchId}`)
                 if (response.ok) {
                     const data = await response.json();
                     if (!data.error){
