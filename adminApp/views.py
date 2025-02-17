@@ -53,8 +53,7 @@ def add_users(request):
             user = form.save()
             return redirect('/administrador')
         else:
-           
-            context = {'form': form, 'errors': form.errors}
+            context = {'form': form, 'errors': form.errors, 'branches': branches}
             return render(request, 'admin/users/add_user.html', context)
     else:
         form = CustomUserCreationForm()

@@ -31,12 +31,11 @@ def attendant_dashboard(request):
 @permission_required_or_403('core.attendant_permission')
 def add_visitor(request):
     if request.method == 'POST':
-        print("entrou1")
         form = VisitorForm(request.POST, request.FILES)
         if form.is_valid():
-            print("entrou2")
             visitor = form.save()
-            return redirect('/atendente/add-visit/?cpf=${visitor.cpf}')
+            cpf = visitor.cpf
+            return redirect(f'/atendente/add-visit/?cpf={cpf}')
         else:
             print(form.errors)
             context = {'form': form}
