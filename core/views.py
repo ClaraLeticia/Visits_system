@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from core.forms import *
+from core.forms import * 
 from django.contrib import messages
+from core.models import CustomUser
+
     
 ######################################## USUÁRIOS ########################################
 
@@ -15,7 +17,13 @@ def loginPage(request):
         # Se o usuário for válido, o método login é chamado e o usuário é logado no sistema
         if user is not None:
             login(request, user)
-            return redirect('/add-visitors')
+            if user.administrador:
+                return redirect('/administrador')
+            if user.atendente:
+                return redirect('/atendente')
+            if user.funcionario:
+                return redirect('/funcionario')
+        
         else:
         # Se o usuário não for válido, uma mensagem de erro é exibida
             messages.info(request, 'Usuário ou senha incorretos')
