@@ -54,6 +54,12 @@ python manage.py runserver
 Acesse o sistema em: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 
 ---
+## 🔨 Instruções
+
+1. Para login como **Administrador**, utilize o username `admin` e a senha `admin123`.
+2. Para login como **Atendente**, utilize o username `atendente1` ou `atendente2` e as respectivas senhas (`atendente123` ou `atendente456`).
+3. Para login como **Funcionário**, utilize o username `funcionario1` ou `funcionario2` e as respectivas senhas (`funcionario123` ou `funcionario456`).
+---
 
 ## 📂 Estrutura do Projeto
 ```
