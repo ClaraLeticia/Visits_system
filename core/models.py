@@ -58,10 +58,6 @@ class CustomUserManager(BaseUserManager):
 
 # Customizando os campos de usuário para adicionar os campos de nivel de acesso
 class CustomUser(AbstractUser):
-    choices = (
-        ('Ativo', 'Ativo'),
-        ('Inativo', 'Inativo'),
-    )
 
     administrador = models.BooleanField(default=False)
     atendente = models.BooleanField(default=False)
@@ -70,7 +66,6 @@ class CustomUser(AbstractUser):
     phone = models.CharField(max_length=20, null=False, blank=False, validators=[validate_phone])
     department = models.ForeignKey('Department', on_delete=models.CASCADE, null=True, blank=True)
     branch = models.ForeignKey('Branch', on_delete=models.CASCADE, null=True, blank=True)
-    status = models.CharField(max_length=10, choices=choices, default='Ativo')
 
     objects = CustomUserManager()
 
