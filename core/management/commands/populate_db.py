@@ -16,11 +16,11 @@ class Command(BaseCommand):
         dept3 = Department.objects.create(name="Segurança", branch=branch2, description="Departamento de Segurança")
     
         # Criando usuários
-        admin_user = CustomUser.objects.create_user(email="admin@email.com", username="admin", password="admin123", administrador=True, phone="11987654321")
-        attendant_user1 = CustomUser.objects.create_user(email="atendente1@email.com", username="atendente1", password="atendente123", atendente=True, phone="11987654322", branch=branch1)
-        attendant_user2 = CustomUser.objects.create_user(email="atendente2@email.com", username="atendente2", password="atendente456", atendente=True, phone="11987654326", branch=branch2)
-        employee_user1 = CustomUser.objects.create_user(email="funcionario1@email.com", username="funcionario1", password="funcionario123", funcionario=True, phone="11987654323", branch=branch1, department=dept1)
-        employee_user2 = CustomUser.objects.create_user(email="funcionario2@email.com", username="funcionario2", password="funcionario456", funcionario=True, phone="11987654327", branch=branch2, department=dept3)
+        admin_user = CustomUser.objects.create_user(email="admin@email.com", username="admin", password="admin123", administrador=True, phone="11987654321", first_name="Admin", last_name="Admin")
+        attendant_user1 = CustomUser.objects.create_user(email="atendente1@email.com", username="atendente1", password="atendente123", atendente=True, phone="11987654322", branch=branch1, first_name="Atendente", last_name="1")
+        attendant_user2 = CustomUser.objects.create_user(email="atendente2@email.com", username="atendente2", password="atendente456", atendente=True, phone="11987654326", branch=branch2, first_name="Atendente", last_name="2")
+        employee_user1 = CustomUser.objects.create_user(email="funcionario1@email.com", username="funcionario1", password="funcionario123", funcionario=True, phone="11987654323", branch=branch1, department=dept1, first_name="Funcionário", last_name="1")
+        employee_user2 = CustomUser.objects.create_user(email="funcionario2@email.com", username="funcionario2", password="funcionario456", funcionario=True, phone="11987654327", branch=branch2, department=dept3, first_name="Funcionário", last_name="2")
     
         # Criando visitantes
         visitor1 = Visitor.objects.create(cpf="12345678901", rg="12345678", name="João Silva", phone="11987654324")
@@ -29,9 +29,9 @@ class Command(BaseCommand):
         visitor4 = Visitor.objects.create(cpf="23456789012", rg="23456789", name="Ana Pereira", phone="11987654329")
     
         # Criando visitas (funcionários só podem registrar visitas na sua branch)
-        visit1 = Visits.objects.create(status="Aguardando", visitor=visitor1, user=employee_user1, department=dept1, date=now())
-        visit2 = Visits.objects.create(status="Aguardando", visitor=visitor2, user=employee_user1, department=dept2, date=now())
-        visit3 = Visits.objects.create(status="Aguardando", visitor=visitor3, user=employee_user2, department=dept3, date=now())
-        visit4 = Visits.objects.create(status="Aguardando", visitor=visitor4, user=employee_user2, department=dept3, date=now())
+        visit1 = Visits.objects.create(status="Agendada", visitor=visitor1, user=employee_user1, department=dept1, date=now())
+        visit2 = Visits.objects.create(status="Agendada", visitor=visitor2, user=employee_user1, department=dept2, date=now())
+        visit3 = Visits.objects.create(status="Agendada", visitor=visitor3, user=employee_user2, department=dept3, date=now())
+        visit4 = Visits.objects.create(status="Agendada", visitor=visitor4, user=employee_user2, department=dept3, date=now())
     
         self.stdout.write(self.style.SUCCESS("Dados de teste criados com sucesso!"))
