@@ -12,8 +12,9 @@ Antes de começar, certifique-se de ter instalado:
 
 ### 2️⃣ **Clonar o repositório**
 ```bash
- git clone https://github.com/seu-usuario/seu-repositorio.git
- cd seu-repositorio
+ git clone https://github.com/ClaraLeticia/Visits_system.git
+ cd Visits_system
+ code . # Caso esteja utilizando o VS Code
 ```
 
 ### 3️⃣ **Criar e ativar o ambiente virtual**
