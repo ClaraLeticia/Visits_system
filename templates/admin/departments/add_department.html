@@ -37,7 +37,7 @@
                     <select id="id_branch" name="branch">
                         <option value="">Selecione a Unidade</option>
                         {% for branch in branches %}
-                            <option value="{{ branch.id }}">{{ branch.name }}</option>
+                            <option value="{{ branch.id }}">{{ branch.name }}</option> <!-- Exibe os valores de unidade -->
                         {% endfor %}
                     </select>
                 </div>

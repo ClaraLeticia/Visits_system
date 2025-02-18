@@ -36,6 +36,7 @@
                     <select id="id_branch" name="branch">
                         <option value="">Selecione a Unidade</option>
                         {% for branch in branches %}
+                            <!-- Carrega todos os valores de unidades e seleciona a unidade de acordo com a unidade do usuário -->
                             <option value="{{ branch.id }}" {% if branch.id == department.branch.id %}selected{% endif %}>{{ branch.name }}</option>
                         {% endfor %}
                     </select>

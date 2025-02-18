@@ -16,13 +16,13 @@ def loginPage(request):
         user = authenticate(request, username=username, password=password) 
         # Se o usuário for válido, o método login é chamado e o usuário é logado no sistema
         if user is not None:
-            login(request, user)
-            if user.administrador:
-                return redirect('/administrador')
-            if user.atendente:
-                return redirect('/atendente')
-            if user.funcionario:
-                return redirect('/funcionario')
+            login(request, user) # Loga o usuário
+            if user.administrador: # Verifica se o usuário é administrador
+                return redirect('/administrador') # Redireciona para a página de administrador
+            if user.atendente: # Verifica se o usuário é atendente
+                return redirect('/atendente') # Redireciona para a página de atendente
+            if user.funcionario: # Verifica se o usuário é funcionário
+                return redirect('/funcionario') # Redireciona para a página de funcionário
         
         else:
         # Se o usuário não for válido, uma mensagem de erro é exibida
@@ -33,6 +33,7 @@ def loginPage(request):
         # Se o método for diferente de POST, a página de login é renderizada
         return render(request, 'registration/login.html')
     
+# Função para deslogar o usuário e redirecionar para a página de login
 def logoutView(request):
     logout(request)
     return redirect('/login')

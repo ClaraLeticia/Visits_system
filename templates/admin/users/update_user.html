@@ -115,6 +115,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             function toggleFields() {
+                // Mostra ou esconde os campos de unidade e setor de acordo com a função selecionada
                 let atendente = document.getElementById("id_atendente").checked;
                 let funcionario = document.getElementById("id_funcionario").checked;
                 let branchField = document.getElementById("branch_field");
@@ -132,6 +133,7 @@
                 }
             }
 
+            // Função para carregar os setores de acordo com a unidade selecionada
             async function fetchDepartments() {
                 const branchId = document.getElementById("id_branch").value;
                 

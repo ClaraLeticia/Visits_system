@@ -123,6 +123,7 @@
     </main>
 
     <script>
+        // Função para exibir os campos de acordo com a função selecionada
         document.addEventListener("DOMContentLoaded", function () {
             function toggleFields() {
                 let atendente = document.getElementById("id_atendente").checked;
@@ -141,7 +142,7 @@
                     departmentField.style.display = "none";
                 }
             }
-
+            // Função para carregar os setores de acordo com a unidade selecionada
             async function fetchDepartments() {
                 const branchId = document.getElementById("id_branch").value;
                 let departmentSelect = document.getElementById("id_department");

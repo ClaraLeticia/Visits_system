@@ -37,15 +37,15 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            // Função para carregar os departamentos
-            async function fetchDepartment(){
+            // Função para carregar os departamentos de acordo com a unidade do atendente
+            async function fetchDepartment(){ 
                 const branchId = {{ user.branch_id }};
                 let departmentSelect = document.getElementById("id_department");
                 const response = await fetch(`/atendente/get-departments/?branch_id=${branchId}`)
                 if (response.ok) {
                     const data = await response.json();
                     if (!data.error){
-                        departmentSelect.innerHTML = '<option value="">Selecione um Setor</option>';
+                        departmentSelect.innerHTML = '<option value="">Selecione um Setor</option>'; // Adiciona os setores de acordo com a unidade do atendente
                         data.departments.forEach(department => {
                             let option = new Option(department.name, department.id);
                             departmentSelect.add(option);
@@ -59,7 +59,7 @@
             }
             fetchDepartment();
 
-            // Função para carregar funcionários
+            // Função para carregar funcionários de acordo com o setor selecionado
             async function fetchFuncUser() {
                 const departmentId = document.getElementById("id_department").value;
                 let userSelect = document.getElementById("id_user");
@@ -79,7 +79,7 @@
                     console.error("Erro ao carregar funcionários", response);
                 };
             }
-            document.getElementById("id_department").addEventListener("change", fetchFuncUser);
+            document.getElementById("id_department").addEventListener("change", fetchFuncUser); // Adiciona o evento de mudança de setor
         });
     </script>
 </body>

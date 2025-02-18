@@ -72,27 +72,28 @@
     </main>
 
     <script>
+        // Função para buscar os dados do visitante
         async function fetchVisitorData(){
             const cpf = document.getElementById('cpf').value;   
             if (cpf.length !== 11) {
                 document.getElementById('error-message').textContent = "CPF inválido.";
             } else { 
                 console.log(cpf)
-                const response = await fetch(`/atendente/get-visitors/?cpf=${cpf}`);
+                const response = await fetch(`/atendente/get-visitors/?cpf=${cpf}`); // fetch para a view
                 if(response.ok){
                     const data = await response.json();
-                    if(!data.error){
+                    if(!data.error){ // Se o visitante foi encontrado substitui os valores dos campos
                         document.getElementById('name').value = data.name;
                         document.getElementById('rg').value = data.rg;
                         document.getElementById('phone').value = data.phone;
-                        if(data.photo){
+                        if(data.photo){ // Se tinha foto, exibe a foto
                             let imgElement = document.getElementById('visitor-photo-img');
                             imgElement.src = data.photo;
                             imgElement.style.display = 'block';
                             let photoInput = document.getElementById('photo');
                             photoInput.value = data.photo;
                         }
-                    }else{
+                    }else{ // Caso não seja encontrado, limpa os campos e exibe mensagem de erro
                         document.getElementById('name').value = "";
                         document.getElementById('rg').value = "";
                         document.getElementById('phone').value = "";
